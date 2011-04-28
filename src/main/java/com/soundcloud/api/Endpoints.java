@@ -1,5 +1,10 @@
 package com.soundcloud.api;
 
+/**
+ * Various SoundCloud API endpoints.
+ * See <a href="https://github.com/soundcloud/api/wiki/03-Representations">the API docs</a> for the most
+ * recent listing.
+ */
 @SuppressWarnings({"UnusedDeclaration"})
 public interface Endpoints {
     String TOKEN = "/oauth2/token";

@@ -153,8 +153,14 @@ public interface CloudAPI {
     void setToken(Token token);
     void addTokenStateListener(TokenStateListener listener);
 
+    /**
+     * The environment to operate against. Use SANDBOX for testing your app, and
+     * LIVE for production applications.
+     */
     enum Env {
+        /** The main production site */
         LIVE("api.soundcloud.com"),
+        /** sandbox-soundcloud.com */
         SANDBOX("api.sandbox-soundcloud.com");
         public final HttpHost host, sslHost;
 
@@ -164,7 +170,9 @@ public interface CloudAPI {
         }
     }
 
-
+    /**
+     * Interested in changes to the current token.
+     */
     interface TokenStateListener {
         /**
          * Called when token was found to be invalid
@@ -179,6 +187,9 @@ public interface CloudAPI {
         void onTokenRefreshed(Token token);
     }
 
+    /**
+     * Thrown when token is not valid.
+     */
     class InvalidTokenException extends IOException {
         public InvalidTokenException(int code, String s) {
             super("HTTP error:" + code + " (" + s + ")");

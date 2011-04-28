@@ -24,7 +24,7 @@ public class Params implements Iterable<NameValuePair> {
     Token token;
     Map<String,File> files;
     public List<NameValuePair> params = new ArrayList<NameValuePair>();
-    private ProgressListener listener;
+    private TransferProgressListener listener;
 
     public Params(Object... args) {
         if (args != null) {
@@ -63,7 +63,7 @@ public class Params implements Iterable<NameValuePair> {
         return this;
     }
 
-    public Params setProgressListener(ProgressListener listener) {
+    public Params setProgressListener(TransferProgressListener listener) {
         this.listener = listener;
         return this;
     }
@@ -111,10 +111,19 @@ public class Params implements Iterable<NameValuePair> {
         return params.iterator();
     }
 
-    public static interface ProgressListener {
+    /**
+     * Updates about the amount of bytes already transferred.
+     */
+    public static interface TransferProgressListener {
+        /**
+         * @param amount number of bytes already transferred.
+         */
         public void transferred(long amount);
     }
 
+    /**
+     * <a href="https://github.com/soundcloud/api/wiki/10.2-Resources%3A-tracks">Tracks</a>
+     */
     public static interface Track {
         String TITLE         = "track[title]";          // required
         String TYPE          = "track[track_type]";
@@ -132,6 +141,9 @@ public class Params implements Iterable<NameValuePair> {
         String PRIVATE       = "private";
     }
 
+    /**
+     * <a href="https://github.com/soundcloud/api/wiki/10.1-Resources%3A-users">Users</a>
+     */
     public static interface User {
         String NAME                  = "user[username]";
         String PERMALINK             = "user[permalink]";
@@ -142,6 +154,9 @@ public class Params implements Iterable<NameValuePair> {
         String AVATAR                = "user[avatar_data]";
     }
 
+    /**
+     * <a href="https://github.com/soundcloud/api/wiki/10.5-Resources%3A-comments">Comments</a>
+     */
     public static interface Comment {
         String BODY      = "comment[body]";
         String TIMESTAMP = "comment[timestamp]";

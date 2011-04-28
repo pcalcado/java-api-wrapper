@@ -10,9 +10,9 @@ import org.apache.http.HttpEntity;
 
 class CountingMultipartEntity implements HttpEntity {
     private HttpEntity mDelegate;
-    private Params.ProgressListener mListener;
+    private Params.TransferProgressListener mListener;
 
-    public CountingMultipartEntity(HttpEntity delegate, Params.ProgressListener listener) {
+    public CountingMultipartEntity(HttpEntity delegate, Params.TransferProgressListener listener) {
         super();
         mDelegate = delegate;
         mListener = listener;
@@ -55,10 +55,10 @@ class CountingMultipartEntity implements HttpEntity {
     }
 
     private static class CountingOutputStream extends FilterOutputStream {
-        private final Params.ProgressListener mListener;
+        private final Params.TransferProgressListener mListener;
         private long mTransferred;
 
-        public CountingOutputStream(final OutputStream out, final Params.ProgressListener listener) {
+        public CountingOutputStream(final OutputStream out, final Params.TransferProgressListener listener) {
             super(out);
             this.mListener = listener;
             this.mTransferred = 0;

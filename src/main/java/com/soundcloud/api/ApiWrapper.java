@@ -169,12 +169,20 @@ public class ApiWrapper implements CloudAPI {
                 true);
     }
 
+    /**
+     * Constructs URI path for a given resource.
+     * @param resource  the resource to access
+     * @param params    request parameters
+     * @param ssl       whether to use SSL or not
+     * @return a valid URI
+     */
     public URI getURI(String resource, Params params, boolean ssl) {
         return URI.create(
                 (ssl ? mEnv.sslHost : mEnv.host).toURI() + resource +
                         (params == null ? "" : "?" + params.queryString()));
     }
 
+    /** Request an OAuth2 token */
     protected Token requestToken(Params params) throws IOException {
         HttpPost post = new HttpPost(Endpoints.TOKEN);
         post.setHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -238,6 +246,7 @@ public class ApiWrapper implements CloudAPI {
     }
 
 
+    /** The HttpClient instance used to make the calls */
     public HttpClient getHttpClient() {
         if (httpClient == null) {
             final HttpParams params = getParams();
@@ -363,6 +372,7 @@ public class ApiWrapper implements CloudAPI {
         listeners.add(listener);
     }
 
+    /** Execute an API request */
     public HttpResponse execute(HttpRequest req) throws IOException {
         return getHttpClient().execute(mEnv.sslHost, addHeaders(req));
     }
@@ -372,6 +382,7 @@ public class ApiWrapper implements CloudAPI {
                 (token == null || !token.valid() ? "invalidated" : token.access));
     }
 
+    /** Adds an OAuth2 header to a given request */
     protected HttpRequest addAuthHeader(HttpRequest request) {
         if (!request.containsHeader(AUTH.WWW_AUTH_RESP)) {
             request.addHeader(getOAuthHeader(getToken()));
@@ -379,6 +390,7 @@ public class ApiWrapper implements CloudAPI {
         return request;
     }
 
+    /** Forces JSON */
     protected HttpRequest addAcceptHeader(HttpRequest request) {
         if (!request.containsHeader("Accept")) {
             request.addHeader("Accept", "application/json");
@@ -392,7 +404,7 @@ public class ApiWrapper implements CloudAPI {
     }
 
 
-    // this method mainly exists to make the wrapper more testable. oh, apache's insanity.
+    /** This method mainly exists to make the wrapper more testable. oh, apache's insanity. */
     protected RequestDirector getRequestDirector(HttpRequestExecutor requestExec,
                                                  ClientConnectionManager conman,
                                                  ConnectionReuseStrategy reustrat,

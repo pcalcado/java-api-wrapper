@@ -36,33 +36,27 @@ class OAuthScheme implements AuthScheme {
         mParams = new HashMap<String, String>();
     }
 
-    @Override
-    public String getSchemeName() {
+    @Override public String getSchemeName() {
         return CloudAPI.OAUTH_SCHEME;
     }
 
-    @Override
-    public String getParameter(String name) {
+    @Override public String getParameter(String name) {
         return mParams.get(name);
     }
 
-    @Override
-    public String getRealm() {
+    @Override public String getRealm() {
         return getParameter("realm");
     }
 
-    @Override
-    public boolean isConnectionBased() {
+    @Override public boolean isConnectionBased() {
         return false;
     }
 
-    @Override
-    public boolean isComplete() {
+    @Override public boolean isComplete() {
         return true;
     }
 
-    @Override
-    public Header authenticate(Credentials credentials, HttpRequest request) throws AuthenticationException {
+    @Override public Header authenticate(Credentials credentials, HttpRequest request) throws AuthenticationException {
         final String usedToken = extractToken(request);
         // make sure only one refresh request gets sent out
         synchronized (OAuthScheme.class) {
@@ -82,8 +76,7 @@ class OAuthScheme implements AuthScheme {
         }
     }
 
-    @Override
-    public void processChallenge(Header header) throws MalformedChallengeException {
+    @Override public void processChallenge(Header header) throws MalformedChallengeException {
         if (header == null) {
             throw new IllegalArgumentException("Header may not be null");
         }
@@ -158,13 +151,11 @@ class OAuthScheme implements AuthScheme {
 
     static class EmptyCredentials implements Credentials {
         public static final Credentials INSTANCE = new EmptyCredentials();
-        @Override
-        public Principal getUserPrincipal() {
+        @Override public Principal getUserPrincipal() {
             return null;
         }
 
-        @Override
-        public String getPassword() {
+        @Override public String getPassword() {
             return null;
         }
     }

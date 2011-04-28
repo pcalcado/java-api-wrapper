@@ -129,7 +129,7 @@ public class ParamsTests {
     public void whenAProgressListenerIsSpecifiedShouldHaveCountingMultipart() throws Exception {
         HttpPost request = new Params("key", "value")
                 .addFile("foo", new File("/tmp"))
-                .setProgressListener(new Params.ProgressListener() {
+                .setProgressListener(new Params.TransferProgressListener() {
                     @Override
                     public void transferred(long amount) {
                     }

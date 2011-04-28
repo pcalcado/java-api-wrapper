@@ -14,12 +14,21 @@ import org.apache.http.protocol.HTTP;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Helper class for various HTTP related functions.
+ */
 public class Http {
     public static final int BUFFER_SIZE = 8192;
     public static final int TIMEOUT = 20 * 1000;
 
     private Http() {}
 
+    /**
+     * Returns a String representation of the response
+     * @param response an HTTP response
+     * @return the content body
+     * @throws IOException
+     */
     public static String getString(HttpResponse response) throws IOException {
         InputStream is = response.getEntity().getContent();
         if (is == null) return null;
@@ -47,7 +56,8 @@ public class Http {
 
 
     /**
-     * @see android.net.http.AndroidHttpClient#newInstance(String, Context)
+     * @see <a href="http://developer.android.com/reference/android/net/http/AndroidHttpClient.html#newInstance(java.lang.String, android.content.Context)">
+     *     android.net.http.AndroidHttpClient#newInstance(String, Context)</a>
      * @return the default HttpParams
      */
     public static HttpParams defaultParams(){
