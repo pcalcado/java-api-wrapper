@@ -12,7 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-@SuppressWarnings({"UseOfSystemOutOrSystemErr"})
+
 public class CloudAPIIntegrationTests implements Params.Track, Endpoints {
     // http://sandbox-soundcloud.com/you/apps/java-api-wrapper-test-app
     static final String CLIENT_ID     = "yH1Jv2C5fhIbZfGTpKtujQ";
@@ -21,8 +21,7 @@ public class CloudAPIIntegrationTests implements Params.Track, Endpoints {
     CloudAPI api;
 
     /*
-    To enable full HTTP logging, add the following system properties:
-
+    To get full HTTP logging, add the following system properties:
     -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
     -Dorg.apache.commons.logging.simplelog.showdatetime=true
     -Dorg.apache.commons.logging.simplelog.log.org.apache.http=DEBUG
@@ -104,18 +103,19 @@ public class CloudAPIIntegrationTests implements Params.Track, Endpoints {
         fos.close();
     }
 
+    /** For debugging purposes */
+    @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             throw new RuntimeException("CloudAPIIntegrationTests <username> <password>");
         }
-
-        Token token = new ApiWrapper(
+        final Token token = new ApiWrapper(
                 CLIENT_ID,
                 CLIENT_SECRET,
                 null,
                 null,
                 CloudAPI.Env.SANDBOX).login(args[0], args[1]);
 
-        System.err.println("token: " + token);
+        System.out.println("token: " + token);
     }
 }

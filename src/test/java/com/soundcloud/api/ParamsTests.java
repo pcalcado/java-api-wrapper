@@ -29,7 +29,7 @@ import java.util.NoSuchElementException;
 
 public class ParamsTests {
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArguemntForNonEvenParams() throws Exception {
+    public void shouldThrowIllegalArgumentForNonEvenParams() throws Exception {
         new Params("1", 2, "3");
     }
 
@@ -80,7 +80,7 @@ public class ParamsTests {
     }
 
     @Test
-    public void shouldGetStringFromHttpReponse() throws Exception {
+    public void shouldGetStringFromHttpResponse() throws Exception {
         HttpResponse resp = mock(HttpResponse.class);
         HttpEntity ent = mock(HttpEntity.class);
         when(ent.getContent()).thenReturn(new ByteArrayInputStream("foo".getBytes()));

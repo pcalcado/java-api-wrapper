@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.soundcloud.api.fakehttp.FakeHttpLayer;
@@ -243,14 +244,14 @@ public class ApiWrapperTests {
 
     @Test
     public void testGetOAuthHeader() throws Exception {
-        Header h = ApiWrapper.getOAuthHeader(new Token("foo", "refresh"));
+        Header h = ApiWrapper.createOAuthHeader(new Token("foo", "refresh"));
         assertThat(h.getName(), equalTo("Authorization"));
         assertThat(h.getValue(), equalTo("OAuth foo"));
     }
 
     @Test
     public void testGetOAuthHeaderNullToken() throws Exception {
-        Header h = ApiWrapper.getOAuthHeader(null);
+        Header h = ApiWrapper.createOAuthHeader(null);
         assertThat(h.getName(), equalTo("Authorization"));
         assertThat(h.getValue(), equalTo("OAuth invalidated"));
     }
@@ -286,5 +287,30 @@ public class ApiWrapperTests {
                 api.loginViaFacebook().toString(),
                         equalTo("https://api.sandbox-soundcloud.com/connect/via/facebook?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
                 );
+    }
+
+    @Test
+    public void shouldCallTokenStateListenerWhenTokenIsInvalidated() throws Exception {
+        CloudAPI.TokenStateListener listener = mock(CloudAPI.TokenStateListener.class);
+        api.addTokenStateListener(listener);
+        api.invalidateToken();
+        verify(listener).onTokenInvalid(api.getToken());
+    }
+
+    @Test
+    public void shouldCallTokenStateListenerWhenTokenIsRefreshed() throws Exception {
+        layer.addPendingHttpResponse(200, "{\n" +
+                "  \"access_token\":  \"fr3sh\",\n" +
+                "  \"expires_in\":    3600,\n" +
+                "  \"scope\":         null,\n" +
+                "  \"refresh_token\": \"refresh\"\n" +
+                "}");
+
+        CloudAPI.TokenStateListener listener = mock(CloudAPI.TokenStateListener.class);
+
+        api.setToken(new Token("access", "refresh"));
+        api.addTokenStateListener(listener);
+        api.refreshToken();
+        verify(listener).onTokenRefreshed(api.getToken());
     }
 }

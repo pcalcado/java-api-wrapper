@@ -5,10 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matcher;
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -28,7 +25,7 @@ public class TokenTests {
     }
 
     @Test
-    public void emptyTokenshouldBeInValid() throws Exception {
+    public void emptyTokenShouldBeInValid() throws Exception {
         Token invalid = new Token(null, "2");
         assertFalse(invalid.valid());
     }

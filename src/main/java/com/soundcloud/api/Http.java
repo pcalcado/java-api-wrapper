@@ -27,7 +27,7 @@ public class Http {
      * Returns a String representation of the response
      * @param response an HTTP response
      * @return the content body
-     * @throws IOException
+     * @throws IOException network error
      */
     public static String getString(HttpResponse response) throws IOException {
         InputStream is = response.getEntity().getContent();
@@ -70,11 +70,10 @@ public class Http {
         // and it's not worth it to pay the penalty of checking every time.
         HttpConnectionParams.setStaleCheckingEnabled(params, false);
 
-        // fix contributed by Bjorn Roche (XXX check if still needed)
+        // fix contributed by Bjorn Roche XXX check if still needed
         params.setBooleanParameter("http.protocol.expect-continue", false);
         params.setParameter(ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE, new ConnPerRoute() {
-            @Override
-            public int getMaxForRoute(HttpRoute httpRoute) {
+            @Override public int getMaxForRoute(HttpRoute httpRoute) {
                 return ConnPerRouteBean.DEFAULT_MAX_CONNECTIONS_PER_ROUTE * 3;
             }
         });

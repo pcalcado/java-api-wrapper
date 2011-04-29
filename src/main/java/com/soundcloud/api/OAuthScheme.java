@@ -72,7 +72,7 @@ class OAuthScheme implements AuthScheme {
                     throw new AuthenticationException("Error refreshing token", e);
                 }
             }
-            return ApiWrapper.getOAuthHeader(newToken);
+            return ApiWrapper.createOAuthHeader(newToken);
         }
     }
 

@@ -18,14 +18,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Convenience class for passing parameters to HTTP calls.
+ * Convenience class for construction HTTP requests.
  */
 public class Params implements Iterable<NameValuePair> {
     Token token;
     Map<String,File> files;
-    public List<NameValuePair> params = new ArrayList<NameValuePair>();
+    public final List<NameValuePair> params = new ArrayList<NameValuePair>();
     private TransferProgressListener listener;
 
+    /**
+     * <code>new Params("page", 10, offset", 0).queryString() // page=10&offset=0
+     * @param args a list of arguments
+     */
     public Params(Object... args) {
         if (args != null) {
             if (args.length % 2 != 0) throw new IllegalArgumentException("need even number of arguments");
@@ -35,44 +39,76 @@ public class Params implements Iterable<NameValuePair> {
         }
     }
 
+    /**
+     * Adds a key value pair
+     * @param name  the name
+     * @param value the value
+     * @return this
+     */
     public Params add(String name, Object value) {
         params.add(new BasicNameValuePair(name, String.valueOf(value)));
         return this;
     }
 
+    /**
+     * The request should be made with a specific token.
+     * @param t the token
+     * @return this
+     */
     public Params withToken(Token t) {
         token = t;
         return this;
     }
 
+    /** @return the size of the parameters */
     public int size() {
         return params.size();
     }
 
+    /**
+     * @return a String that is suitable for use as an <code>application/x-www-form-urlencoded</code>
+     * list of parameters in an HTTP PUT or HTTP POST.
+     */
     public String queryString() {
         return URLEncodedUtils.format(params, "UTF-8");
     }
 
+    /** @return an URL with the query string parameters appended */
     public String url(String url) {
         return params.isEmpty() ? url : url + "?" + queryString();
     }
 
+    /**
+     * Registers a file to be uploaded with a POST or PUT request.
+     * @param name  the name of the file
+     * @param file  the file to be submitted
+     * @return this
+     */
     public Params addFile(String name, File file) {
         if (files == null) files = new HashMap<String,File>();
         if (file != null)  files.put(name, file);
         return this;
     }
 
+
+    /** Registers a listener for receiving notifications about transfer progress */
     public Params setProgressListener(TransferProgressListener listener) {
         this.listener = listener;
         return this;
     }
 
+    /**
+     * Builds a request with the given set of parameters and files.
+     * @param method    the type of request to use
+     * @param resource  the resource to access
+     * @param <T>       the type of request to use
+     * @return HTTP request, prepared to be executed
+     */
     public <T extends HttpRequestBase> T buildRequest(Class<T> method, String resource) {
         try {
             HttpRequestBase request = method.newInstance();
             if (token != null) {
-                request.addHeader(ApiWrapper.getOAuthHeader(token));
+                request.addHeader(ApiWrapper.createOAuthHeader(token));
             }
 
             if (files != null && !files.isEmpty() && request instanceof HttpEntityEnclosingRequestBase) {
@@ -124,6 +160,7 @@ public class Params implements Iterable<NameValuePair> {
     /**
      * <a href="https://github.com/soundcloud/api/wiki/10.2-Resources%3A-tracks">Tracks</a>
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public static interface Track {
         String TITLE         = "track[title]";          // required
         String TYPE          = "track[track_type]";
@@ -144,6 +181,7 @@ public class Params implements Iterable<NameValuePair> {
     /**
      * <a href="https://github.com/soundcloud/api/wiki/10.1-Resources%3A-users">Users</a>
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public static interface User {
         String NAME                  = "user[username]";
         String PERMALINK             = "user[permalink]";
@@ -157,6 +195,7 @@ public class Params implements Iterable<NameValuePair> {
     /**
      * <a href="https://github.com/soundcloud/api/wiki/10.5-Resources%3A-comments">Comments</a>
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public static interface Comment {
         String BODY      = "comment[body]";
         String TIMESTAMP = "comment[timestamp]";

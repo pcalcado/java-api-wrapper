@@ -182,7 +182,12 @@ public class ApiWrapper implements CloudAPI {
                         (params == null ? "" : "?" + params.queryString()));
     }
 
-    /** Request an OAuth2 token */
+    /**
+     * Request an OAuth2 token from SoundCloud
+     * @throws java.io.IOException network error
+     * @throws com.soundcloud.api.CloudAPI.InvalidTokenException unauthorized
+     * @see Endpoints#TOKEN
+     */
     protected Token requestToken(Params params) throws IOException {
         HttpPost post = new HttpPost(Endpoints.TOKEN);
         post.setHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -372,12 +377,16 @@ public class ApiWrapper implements CloudAPI {
         listeners.add(listener);
     }
 
-    /** Execute an API request */
+    /**
+     * Execute an API request
+     * @throws java.io.IOException network error etc.
+     */
     public HttpResponse execute(HttpRequest req) throws IOException {
         return getHttpClient().execute(mEnv.sslHost, addHeaders(req));
     }
 
-    public static Header getOAuthHeader(Token token) {
+    /** Creates an OAuth2 header for the given token */
+    public static Header createOAuthHeader(Token token) {
         return new BasicHeader(AUTH.WWW_AUTH_RESP, "OAuth " +
                 (token == null || !token.valid() ? "invalidated" : token.access));
     }
@@ -385,7 +394,7 @@ public class ApiWrapper implements CloudAPI {
     /** Adds an OAuth2 header to a given request */
     protected HttpRequest addAuthHeader(HttpRequest request) {
         if (!request.containsHeader(AUTH.WWW_AUTH_RESP)) {
-            request.addHeader(getOAuthHeader(getToken()));
+            request.addHeader(createOAuthHeader(getToken()));
         }
         return request;
     }
@@ -398,6 +407,7 @@ public class ApiWrapper implements CloudAPI {
         return request;
     }
 
+    /** Adds all required headers to the request */
     protected HttpRequest addHeaders(HttpRequest req) {
         return addAcceptHeader(
                 addAuthHeader(req));

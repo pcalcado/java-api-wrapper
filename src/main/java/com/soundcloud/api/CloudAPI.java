@@ -16,7 +16,6 @@ import java.net.URI;
  * </ul>
  *
  * This is the actual interface, for the implementation see ApiWrapper.
- *
  * @version 1.0
  * @author Jan Berkel <jan@soundcloud.com>
  * @see ApiWrapper
@@ -46,7 +45,6 @@ public interface CloudAPI {
      * @throws IOException In case of network/server errors
      */
     Token login(String username, String password) throws IOException;
-
 
     /**
      * Request login/signup via Facebook.
@@ -191,8 +189,14 @@ public interface CloudAPI {
      * Thrown when token is not valid.
      */
     class InvalidTokenException extends IOException {
-        public InvalidTokenException(int code, String s) {
-            super("HTTP error:" + code + " (" + s + ")");
+        private static final long serialVersionUID = 1954919760451539868L;
+
+        /**
+         * @param code the HTTP error code
+         * @param status the HTTP status, or other error message
+         */
+        public InvalidTokenException(int code, String status) {
+            super("HTTP error:" + code + " (" + status + ")");
         }
     }
 }
