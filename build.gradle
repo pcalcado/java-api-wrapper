@@ -1,5 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 
+sourceCompatibility = 1.6
 version = '1.0.0-SNAPSHOT'
 
 repositories {
@@ -17,3 +20,4 @@ dependencies {
   testCompile group: 'org.mockito', name: 'mockito-core', version: '1.8.5'
 }
 
+[compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
