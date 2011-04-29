@@ -19,6 +19,21 @@ easily create project files with gradle:
 
 However, never commit any project files to the repo.
 
+## Examples
+
+The wrapper ships with two example classes in `src/examples/java` -
+[CreateWrapper.java][] creates a wrapper an obtains an access token using
+login/password. The wrapper is then serialised to disk and used by subsequent calls of
+[GetResource.java][]. You can use two gradle tasks to run these programs:
+
+    $ gradle createWrapper -Pclient_id=my_client_id \
+        -Pclient_secret=mys3cr3t \
+        -Plogin=api-testing \
+        -Ppassword=testing \
+        -Penv=live  # or sandbox
+
+    $ gradle getResource -Presource=/me
+
 ## Note on Patches/Pull Requests
 
   * Fork the project.
@@ -31,3 +46,6 @@ However, never commit any project files to the repo.
 
 Includes portions of code (c) 2010 Xtreme Labs and Pivotal Labs and (c) 2009 urbanSTEW
 See LICENSE for details.
+
+[CreateWrapper.java]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
+[GetResource.java]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/GetResource.java

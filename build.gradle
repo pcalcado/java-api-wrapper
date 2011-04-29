@@ -9,6 +9,12 @@ repositories {
   mavenCentral()
 }
 
+sourceSets {
+  examples {
+    compileClasspath = sourceSets.main.classes + sourceSets.main.runtimeClasspath
+  }
+}
+
 dependencies {
   compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.0.3'
   compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.0.1'
@@ -21,3 +27,25 @@ dependencies {
 }
 
 [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
+
+httpDebug = ['org.apache.commons.logging.Log': 'org.apache.commons.logging.impl.SimpleLog',
+             'org.apache.commons.logging.simplelog.showdatetime': 'true',
+             'org.apache.commons.logging.simplelog.log.org.apache.http': 'DEBUG',
+             'org.apache.commons.logging.simplelog.log.org.apache.http.wire': 'ERROR']
+
+task(createWrapper, dependsOn: ['compileJava', 'compileExamplesJava']) << {
+  javaexec {
+    main = 'com.soundcloud.api.examples.CreateWrapper'
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.examples.classes
+    args client_id, client_secret, login, password, env
+  }
+}
+
+task(getResource, dependsOn: ['compileJava', 'compileExamplesJava']) << {
+  javaexec {
+    main = 'com.soundcloud.api.examples.GetResource'
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.examples.classes
+    args resource
+    systemProperties httpDebug
+  }
+}

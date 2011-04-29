@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 public class CloudAPIIntegrationTests implements Params.Track, Endpoints {
     // http://sandbox-soundcloud.com/you/apps/java-api-wrapper-test-app
     static final String CLIENT_ID     = "yH1Jv2C5fhIbZfGTpKtujQ";
@@ -101,21 +100,5 @@ public class CloudAPIIntegrationTests implements Params.Track, Endpoints {
         while ((n = is.read(b)) >= 0) fos.write(b, 0, n);
         is.close();
         fos.close();
-    }
-
-    /** For debugging purposes */
-    @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
-    public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            throw new RuntimeException("CloudAPIIntegrationTests <username> <password>");
-        }
-        final Token token = new ApiWrapper(
-                CLIENT_ID,
-                CLIENT_SECRET,
-                null,
-                null,
-                CloudAPI.Env.SANDBOX).login(args[0], args[1]);
-
-        System.out.println("token: " + token);
     }
 }

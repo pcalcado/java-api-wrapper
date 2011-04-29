@@ -41,7 +41,13 @@ import org.apache.http.protocol.HttpRequestExecutor;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -61,13 +67,16 @@ import java.util.Set;
  * @version 1.0
  * @see CloudAPI
  */
-public class ApiWrapper implements CloudAPI {
-    private HttpClient httpClient;
+public class ApiWrapper implements CloudAPI, Serializable {
+    private static final long serialVersionUID = 3662083416905771921L;
+
+    public final Env env;
+
     private Token mToken;
     private final String mClientId, mClientSecret;
-    private final Env mEnv;
-    private final Set<TokenStateListener> listeners = new HashSet<TokenStateListener>();
     private final URI mRedirectUri;
+    transient private HttpClient httpClient;
+    transient private final Set<TokenStateListener> listeners;
 
     /**
      * Constructs a new ApiWrapper instance.
@@ -88,7 +97,8 @@ public class ApiWrapper implements CloudAPI {
         mClientSecret = clientSecret;
         mRedirectUri = redirectUri;
         mToken = token == null ? new Token(null, null) : token;
-        mEnv = env;
+        this.env = env;
+        listeners = new HashSet<TokenStateListener>();
     }
 
     @Override public Token login(String username, String password) throws IOException {
@@ -152,8 +162,8 @@ public class ApiWrapper implements CloudAPI {
     @Override public void invalidateToken() {
         if (mToken != null) {
             mToken.invalidate();
-            for (TokenStateListener l : listeners) {
-                l.onTokenInvalid(mToken);
+            if (listeners != null) {
+                for (TokenStateListener l : listeners) l.onTokenInvalid(mToken);
             }
         }
     }
@@ -178,7 +188,7 @@ public class ApiWrapper implements CloudAPI {
      */
     public URI getURI(String resource, Params params, boolean ssl) {
         return URI.create(
-                (ssl ? mEnv.sslHost : mEnv.host).toURI() + resource +
+                (ssl ? env.sslHost : env.host).toURI() + resource +
                         (params == null ? "" : "?" + params.queryString()));
     }
 
@@ -192,7 +202,7 @@ public class ApiWrapper implements CloudAPI {
         HttpPost post = new HttpPost(Endpoints.TOKEN);
         post.setHeader("Content-Type", "application/x-www-form-urlencoded");
         post.setEntity(new StringEntity(params.queryString()));
-        HttpResponse response = getHttpClient().execute(mEnv.sslHost, post);
+        HttpResponse response = getHttpClient().execute(env.sslHost, post);
 
         final int status = response.getStatusLine().getStatusCode();
         final String json = Http.getString(response);
@@ -202,8 +212,8 @@ public class ApiWrapper implements CloudAPI {
             switch (status) {
                 case HttpStatus.SC_OK:
                     final Token token = new Token(resp);
-                    for (TokenStateListener l : listeners) {
-                        l.onTokenRefreshed(token);
+                    if (listeners != null) {
+                        for (TokenStateListener l : listeners) l.onTokenRefreshed(token);
                     }
                     return token;
                 case HttpStatus.SC_UNAUTHORIZED:
@@ -261,7 +271,7 @@ public class ApiWrapper implements CloudAPI {
             final SchemeRegistry registry = new SchemeRegistry();
             registry.register(new Scheme("http", getSocketFactory(), 80));
             final SSLSocketFactory sslFactory = getSSLSocketFactory();
-            if (mEnv == Env.SANDBOX) {
+            if (env == Env.SANDBOX) {
                 // disable strict checks on sandbox XXX remove when certificate is fixed
                 sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
             }
@@ -273,7 +283,7 @@ public class ApiWrapper implements CloudAPI {
                     setKeepAliveStrategy(new ConnectionKeepAliveStrategy() {
                         @Override
                         public long getKeepAliveDuration(HttpResponse httpResponse, HttpContext httpContext) {
-                            return 20; // seconds
+                            return 20 * 1000; // milliseconds
                         }
                     });
 
@@ -374,7 +384,7 @@ public class ApiWrapper implements CloudAPI {
 
     @Override
     public void addTokenStateListener(TokenStateListener listener) {
-        listeners.add(listener);
+        if (listeners != null) listeners.add(listener);
     }
 
     /**
@@ -382,8 +392,31 @@ public class ApiWrapper implements CloudAPI {
      * @throws java.io.IOException network error etc.
      */
     public HttpResponse execute(HttpRequest req) throws IOException {
-        return getHttpClient().execute(mEnv.sslHost, addHeaders(req));
+        return getHttpClient().execute(env.sslHost, addHeaders(req));
     }
+
+    /**
+     * serialize the wrapper to a File
+     * @param f target
+     * @throws java.io.IOException IO problems
+     */
+    public void toFile(File f) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+        oos.writeObject(this);
+    }
+
+    /**
+     * Read wrapper from a file
+     * @param f  the file
+     * @return   the wrapper
+     * @throws IOException IO problems
+     * @throws ClassNotFoundException class not found
+     */
+    public static ApiWrapper fromFile(File f) throws IOException, ClassNotFoundException {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+        return (ApiWrapper) ois.readObject();
+    }
+
 
     /** Creates an OAuth2 header for the given token */
     public static Header createOAuthHeader(Token token) {

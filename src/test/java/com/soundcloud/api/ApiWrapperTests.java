@@ -32,6 +32,7 @@ import org.apache.http.protocol.HttpRequestExecutor;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
@@ -312,5 +313,15 @@ public class ApiWrapperTests {
         api.addTokenStateListener(listener);
         api.refreshToken();
         verify(listener).onTokenRefreshed(api.getToken());
+    }
+
+    @Test
+    public void shouldSerializeAndDeserializeWrapper() throws Exception {
+        ApiWrapper wrapper = new ApiWrapper("client", "secret", null, new Token("1", "2"), CloudAPI.Env.SANDBOX);
+        File ser = File.createTempFile("serialized_wrapper", "ser");
+        wrapper.toFile(ser);
+        ApiWrapper other = ApiWrapper.fromFile(ser);
+        assertThat(wrapper.getToken(), equalTo(other.getToken()));
+        assertThat(wrapper.env, equalTo(other.env));
     }
 }
