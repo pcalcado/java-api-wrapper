@@ -41,15 +41,15 @@ public class TestHttpResponse extends HttpResponseStub {
         @Override public long getContentLength() {
             return responseBody.length();
         }
-        
+
         @Override public Header getContentType() {
             return contentType;
         }
-        
+
         @Override public boolean isStreaming() {
             return true;
         }
-        
+
         @Override public boolean isRepeatable() {
             return true;
         }
