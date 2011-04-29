@@ -27,6 +27,7 @@ However, never commit any project files to the repo.
   * Commit, do not mess with buildfile, version, or history.
   * Send a pull request. Bonus points for topic branches.
 
-## License
+## Credits / License
 
-See LICENSE.
+Includes portions of code (c) 2010 Xtreme Labs and Pivotal Labs and (c) 2009 urbanSTEW
+See LICENSE for details.
