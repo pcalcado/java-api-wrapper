@@ -70,13 +70,14 @@ import java.util.Set;
 public class ApiWrapper implements CloudAPI, Serializable {
     private static final long serialVersionUID = 3662083416905771921L;
 
+    /** The current environment */
     public final Env env;
 
     private Token mToken;
     private final String mClientId, mClientSecret;
     private final URI mRedirectUri;
     transient private HttpClient httpClient;
-    transient private final Set<TokenStateListener> listeners;
+    transient private Set<TokenStateListener> listeners;
 
     /**
      * Constructs a new ApiWrapper instance.
@@ -98,7 +99,6 @@ public class ApiWrapper implements CloudAPI, Serializable {
         mRedirectUri = redirectUri;
         mToken = token == null ? new Token(null, null) : token;
         this.env = env;
-        listeners = new HashSet<TokenStateListener>();
     }
 
     @Override public Token login(String username, String password) throws IOException {
@@ -383,8 +383,9 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override
-    public void addTokenStateListener(TokenStateListener listener) {
-        if (listeners != null) listeners.add(listener);
+    public synchronized void addTokenStateListener(TokenStateListener listener) {
+        if (listeners == null) listeners = new HashSet<TokenStateListener>();
+        listeners.add(listener);
     }
 
     /**
@@ -403,6 +404,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
     public void toFile(File f) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
         oos.writeObject(this);
+        oos.close();
     }
 
     /**
@@ -414,7 +416,11 @@ public class ApiWrapper implements CloudAPI, Serializable {
      */
     public static ApiWrapper fromFile(File f) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
-        return (ApiWrapper) ois.readObject();
+        try {
+            return (ApiWrapper) ois.readObject();
+        } finally {
+            ois.close();
+        }
     }
 
 

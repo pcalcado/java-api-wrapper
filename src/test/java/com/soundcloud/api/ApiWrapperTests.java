@@ -323,5 +323,11 @@ public class ApiWrapperTests {
         ApiWrapper other = ApiWrapper.fromFile(ser);
         assertThat(wrapper.getToken(), equalTo(other.getToken()));
         assertThat(wrapper.env, equalTo(other.env));
+
+        // make sure we can still use listeners after deserializing
+        CloudAPI.TokenStateListener listener = mock(CloudAPI.TokenStateListener.class);
+        other.addTokenStateListener(listener);
+        other.invalidateToken();
+        verify(listener).onTokenInvalid(other.getToken());
     }
 }
