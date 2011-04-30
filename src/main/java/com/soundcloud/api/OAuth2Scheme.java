@@ -23,14 +23,14 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class OAuthScheme implements AuthScheme {
+class OAuth2Scheme implements AuthScheme {
     public HashMap<String, String> mParams;
     public HttpParams mHttpParams;
     private CloudAPI mApi;
 
     public static Pattern AUTHORIZATION_HEADER_PATTERN = Pattern.compile("OAuth (\\w+)");
 
-    public OAuthScheme(CloudAPI api, HttpParams params) {
+    public OAuth2Scheme(CloudAPI api, HttpParams params) {
         mApi = api;
         mHttpParams = params;
         mParams = new HashMap<String, String>();
@@ -56,10 +56,11 @@ class OAuthScheme implements AuthScheme {
         return true;
     }
 
-    @Override public Header authenticate(Credentials credentials, HttpRequest request) throws AuthenticationException {
+    @Override public Header authenticate(Credentials credentials, HttpRequest request)
+            throws AuthenticationException {
         final String usedToken = extractToken(request);
         // make sure only one refresh request gets sent out
-        synchronized (OAuthScheme.class) {
+        synchronized (OAuth2Scheme.class) {
             final Token apiToken = mApi.getToken();
             Token newToken = apiToken;
             if (apiToken == null || apiToken.access == null || apiToken.access.equals(usedToken)) {
@@ -80,9 +81,9 @@ class OAuthScheme implements AuthScheme {
         if (header == null) {
             throw new IllegalArgumentException("Header may not be null");
         }
-        String authheader = header.getName();
-        if (!authheader.equalsIgnoreCase(AUTH.WWW_AUTH)) {
-            throw new MalformedChallengeException("Unexpected header name: " + authheader);
+        String authHeader = header.getName();
+        if (!authHeader.equalsIgnoreCase(AUTH.WWW_AUTH)) {
+            throw new MalformedChallengeException("Unexpected header name: " + authHeader);
         }
 
         CharArrayBuffer buffer;
@@ -145,7 +146,7 @@ class OAuthScheme implements AuthScheme {
 
         @Override
         public AuthScheme newInstance(HttpParams params) {
-            return new OAuthScheme(api, params);
+            return new OAuth2Scheme(api, params);
         }
     }
 

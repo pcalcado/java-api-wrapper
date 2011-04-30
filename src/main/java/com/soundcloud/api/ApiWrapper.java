@@ -289,9 +289,9 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
                     getCredentialsProvider().setCredentials(
                         new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, CloudAPI.REALM, OAUTH_SCHEME),
-                        OAuthScheme.EmptyCredentials.INSTANCE);
+                        OAuth2Scheme.EmptyCredentials.INSTANCE);
 
-                    getAuthSchemes().register(CloudAPI.OAUTH_SCHEME, new OAuthScheme.Factory(ApiWrapper.this));
+                    getAuthSchemes().register(CloudAPI.OAUTH_SCHEME, new OAuth2Scheme.Factory(ApiWrapper.this));
                 }
 
                 @Override protected HttpContext createHttpContext() {
@@ -303,7 +303,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
                 @Override protected BasicHttpProcessor createHttpProcessor() {
                     BasicHttpProcessor processor = super.createHttpProcessor();
-                    processor.addInterceptor(new OAuthHttpRequestInterceptor());
+                    processor.addInterceptor(new OAuth2HttpRequestInterceptor());
                     return processor;
                 }
 

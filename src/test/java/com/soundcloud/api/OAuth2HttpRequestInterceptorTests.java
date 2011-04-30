@@ -14,15 +14,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-public class OAuthHttpRequestInterceptorTests {
-    OAuthHttpRequestInterceptor interceptor;
+public class OAuth2HttpRequestInterceptorTests {
+    OAuth2HttpRequestInterceptor interceptor;
     HttpRequest request;
     HttpContext context;
     AuthState authState;
 
     @Before
     public void setup() {
-        interceptor = new OAuthHttpRequestInterceptor();
+        interceptor = new OAuth2HttpRequestInterceptor();
         request = mock(HttpRequest.class);
         RequestLine line = mock(RequestLine.class);
         when(line.getMethod()).thenReturn("GET");

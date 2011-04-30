@@ -19,14 +19,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class OAuthSchemeTests {
-    OAuthScheme scheme;
+public class OAuth2SchemeTests {
+    OAuth2Scheme scheme;
     CloudAPI api;
 
     @Before
     public void setup() {
         api = mock(CloudAPI.class);
-        scheme = new OAuthScheme(api, null);
+        scheme = new OAuth2Scheme(api, null);
     }
 
     @Test
@@ -109,8 +109,8 @@ public class OAuthSchemeTests {
 
     @Test
     public void shouldExtractToken() throws Exception {
-        assertThat(OAuthScheme.extractToken(new BasicHeader(AUTH.WWW_AUTH_RESP, "OAuth 1234")), equalTo("1234"));
-        assertThat(OAuthScheme.extractToken(new BasicHeader("Random", "OAuth 1234")), nullValue());
-        assertThat(OAuthScheme.extractToken(new BasicHeader(AUTH.WWW_AUTH_RESP, "Foo 1234")), nullValue());
+        assertThat(OAuth2Scheme.extractToken(new BasicHeader(AUTH.WWW_AUTH_RESP, "OAuth 1234")), equalTo("1234"));
+        assertThat(OAuth2Scheme.extractToken(new BasicHeader("Random", "OAuth 1234")), nullValue());
+        assertThat(OAuth2Scheme.extractToken(new BasicHeader(AUTH.WWW_AUTH_RESP, "Foo 1234")), nullValue());
     }
 }

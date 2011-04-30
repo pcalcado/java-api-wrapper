@@ -11,7 +11,7 @@ import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 
-class OAuthHttpRequestInterceptor implements HttpRequestInterceptor {
+class OAuth2HttpRequestInterceptor implements HttpRequestInterceptor {
     @Override public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
         if (request == null) throw new IllegalArgumentException("HTTP request may not be null");
         if (context == null) throw new IllegalArgumentException("HTTP context may not be null");
