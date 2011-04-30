@@ -22,9 +22,9 @@ However, never commit any project files to the repo.
 ## Examples
 
 The wrapper ships with two example classes in `src/examples/java` -
-[CreateWrapper.java][] creates a wrapper an obtains an access token using
+[CreateWrapper.java][] creates a wrapper and obtains an access token using
 login/password. The wrapper is then serialised to disk and used by subsequent calls of
-[GetResource.java][]. You can use two gradle tasks to run these programs:
+[GetResource.java][]. You can use two gradle tasks to compile and run these programs:
 
     $ gradle createWrapper -Pclient_id=my_client_id \
         -Pclient_secret=mys3cr3t \
@@ -44,7 +44,8 @@ login/password. The wrapper is then serialised to disk and used by subsequent ca
 
 ## Credits / License
 
-Includes portions of code (c) 2010 Xtreme Labs and Pivotal Labs and (c) 2009 urbanSTEW
+Includes portions of code (c) 2010 Xtreme Labs and Pivotal Labs and (c) 2009 urbanSTEW.
+
 See LICENSE for details.
 
 [CreateWrapper.java]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
