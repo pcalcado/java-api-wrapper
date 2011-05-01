@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.net.URI;
 
 
-public class ApiWrapperTests {
+public class ApiWrapperTest {
     private ApiWrapper api;
     final FakeHttpLayer layer = new FakeHttpLayer();
     @Before

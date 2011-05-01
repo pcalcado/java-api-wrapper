@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-public class OAuth2HttpRequestInterceptorTests {
+public class OAuth2HttpRequestInterceptorTest {
     OAuth2HttpRequestInterceptor interceptor;
     HttpRequest request;
     HttpContext context;

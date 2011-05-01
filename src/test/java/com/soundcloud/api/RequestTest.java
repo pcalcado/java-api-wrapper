@@ -28,7 +28,7 @@ import java.util.IllegalFormatException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class RequestTests {
+public class RequestTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentForNonEvenParams() throws Exception {
         new Request().with("1", 2, "3");

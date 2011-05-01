@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 
-public class TokenTests {
+public class TokenTest {
     @Test
     public void shouldInvalidateToken() throws Exception {
         Token t = new Token("1", "2");

@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class OAuth2SchemeTests {
+public class OAuth2SchemeTest {
     OAuth2Scheme scheme;
     CloudAPI api;
 
