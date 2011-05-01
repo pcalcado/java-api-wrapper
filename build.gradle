@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.6
 version = '1.0.0-SNAPSHOT'
@@ -49,4 +50,20 @@ task(getResource, dependsOn: ['compileJava', 'compileExamplesJava']) << {
     args resource
     systemProperties httpDebug
   }
+}
+
+task writePom << {
+  pom {
+    project {
+      groupId 'com.soundcloud'
+      inceptionYear '2011'
+      licenses {
+        license {
+          name 'The MIT License'
+          url  'https://github.com/soundcloud/java-api-wrapper/raw/master/LICENSE'
+          distribution 'repo'
+        }
+      }
+    }
+  }.writeTo("pom.xml")
 }
