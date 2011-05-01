@@ -1,6 +1,6 @@
 # java-api-wrapper
 
-OAuth2 compatible SoundCloud API wrapper
+OAuth2 compatible SoundCloud API wrapper ([javadoc][]).
 
 ## Build + Test
 
@@ -63,6 +63,7 @@ Includes portions of code (c) 2010 Xtreme Labs and Pivotal Labs and (c) 2009 urb
 See LICENSE for details.
 
 [gradle]: http://www.gradle.org/
+[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/index.html
 [CreateWrapper]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
 [GetResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/GetResource.java
 [UploadFile]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/UploadFile.java

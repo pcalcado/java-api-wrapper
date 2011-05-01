@@ -1,5 +1,8 @@
 package com.soundcloud.api;
 
+/**
+ * Request parameters for various objects.
+ */
 public interface Params {
     /**
      * <a href="https://github.com/soundcloud/api/wiki/10.2-Resources%3A-tracks">Tracks</a>

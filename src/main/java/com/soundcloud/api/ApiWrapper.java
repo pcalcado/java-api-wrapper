@@ -56,7 +56,6 @@ import java.util.Set;
  * Interface with SoundCloud, using OAuth2.
  * This API wrapper makes a few assumptions - namely:
  * <ul>
- * <li>Only resource owner passwords credentials is supported</li>
  * <li>Server responses are always requested in JSON format</li>
  * <li>Refresh-token handling is transparent to the client application</li>
  * </ul>
@@ -131,7 +130,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
                 "client_id", mClientId,
                 "client_secret", mClientSecret));
         if (!signup.signupScoped()) {
-            throw new InvalidTokenException(200, "Could not obtain signup scope (got: '" +
+            throw new InvalidTokenException(-1, "Could not obtain signup scope (got: '" +
                     signup.scope + "')");
         }
         return signup;
@@ -166,7 +165,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
         }
     }
 
-    public URI loginViaFacebook() {
+    @Override public URI loginViaFacebook() {
         return getURI(
                 Request.to(Endpoints.FACEBOOK_LOGIN).with(
                         "redirect_uri", mRedirectUri,
@@ -365,7 +364,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     /**
-     * Execute an API request
+     * Execute an API request, adds the necessary headers.
      * @throws java.io.IOException network error etc.
      */
     public HttpResponse execute(HttpRequest req) throws IOException {
@@ -398,7 +397,6 @@ public class ApiWrapper implements CloudAPI, Serializable {
             ois.close();
         }
     }
-
 
     /** Creates an OAuth2 header for the given token */
     public static Header createOAuthHeader(Token token) {

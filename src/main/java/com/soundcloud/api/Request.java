@@ -28,17 +28,22 @@ public class Request implements Iterable<NameValuePair> {
     private String mResource;
     private TransferProgressListener listener;
 
-    public Request(String... resource) {
-       if (resource != null && resource.length > 0) {
-           mResource = resource[0];
-       }
+    /** Empty request */
+    public Request() {}
+
+    /**
+     * @param resource the base resource
+     */
+    public Request(String resource) {
+       mResource = resource;
     }
 
     /**
      * @param resource  the resource to request
-     * @param args      optional string expansion arguments (passed to String#format)
+     * @param args      optional string expansion arguments (passed to String#format(String, Object...)
      * @throws java.util.IllegalFormatException - If a format string contains an illegal syntax,
      * @return the request
+     * @see String#format(String, Object...)
      */
     public static Request to(String resource, Object... args) {
         if (args != null &&

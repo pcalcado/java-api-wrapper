@@ -10,12 +10,11 @@ import java.net.URI;
  * Interface with SoundCloud, using OAuth2.
  * This API wrapper makes a few assumptions - namely:
  * <ul>
- *     <li>Only resource owner passwords credentials is supported</li>
  *     <li>Server responses are always requested in JSON format</li>
  *     <li>Refresh-token handling is transparent to the client application</li>
  * </ul>
  *
- * This is the actual interface, for the implementation see ApiWrapper.
+ * This is the interface, for the implementation see ApiWrapper.
  * @version 1.0
  * @author Jan Berkel <jan@soundcloud.com>
  * @see ApiWrapper
@@ -140,17 +139,26 @@ public interface CloudAPI {
 
     /**
      * Request login/signup via Facebook.
-     * After the Facebook login, control will go to the redirect URI (wrapper specific).
+     * After the Facebook login, control will go to the redirect URI (wrapper specific), with
+     * one of the following query parameters appended:
+     * <ul>
+     * <li><code>code</code> in case of success, this will contain the code used for the
+     *     <code>authorizationCode</code> call to obtain the access token.
+     * <li><code>error</code> in case of failure, this contains an error code (most likely
+     * <code>access_denied</code>).
+     * </ul>
      * @return the URI to open in a browser/WebView etc.
+     * @see CloudAPI#authorizationCode(String)
      */
     URI loginViaFacebook();
 
     /**
-     * The environment to operate against. Use SANDBOX for testing your app, and
-     * LIVE for production applications.
+     * The environment to operate against.
+     * Use SANDBOX for testing your app, and LIVE for production applications.
      */
     enum Env {
         /** The main production site */
+        @SuppressWarnings({"UnusedDeclaration"})
         LIVE("api.soundcloud.com"),
         /** sandbox-soundcloud.com */
         SANDBOX("api.sandbox-soundcloud.com");

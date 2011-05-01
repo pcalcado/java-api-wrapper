@@ -63,3 +63,11 @@ task writePom << {
     }
   }.writeTo("pom.xml")
 }
+
+task doc(type: Javadoc) {
+  source = sourceSets.main.allJava
+  title = "SoundCloud Java API Wrapper $version"
+  classpath = sourceSets.main.compileClasspath
+  destinationDir = new File(buildDir, 'javadoc')
+  //options.stylesheetFile = new File('styles.css')
+}
