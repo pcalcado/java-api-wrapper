@@ -42,9 +42,9 @@ public class CloudAPIIntegrationTests implements Params.Track, Endpoints {
 
     @Test
     public void shouldUploadASimpleAudioFile() throws Exception {
-        HttpResponse resp = api.post(Request.to(TRACKS,
-                TITLE, "Hello Android",
-                POST_TO_EMPTY, "")
+        HttpResponse resp = api.post(Request.to(TRACKS).with(
+                  TITLE, "Hello Android",
+                  POST_TO_EMPTY, "")
                 .withFile(ASSET_DATA, new File(getClass().getResource("hello.aiff").getFile())));
 
         int status = resp.getStatusLine().getStatusCode();
