@@ -28,8 +28,11 @@ public interface Endpoints {
     String MY_TRACKS           = "/me/tracks";
     String MY_PLAYLISTS        = "/me/playlists";
     String MY_FAVORITES        = "/me/favorites";
+    String MY_FAVORITE         = "/me/favorites/%d";
     String MY_FOLLOWERS        = "/me/followers";
+    String MY_FOLLOWER         = "/me/followers/%d";
     String MY_FOLLOWINGS       = "/me/followings";
+    String MY_FOLLOWING        = "/me/followings/%d";
     String MY_CONFIRMATION     = "/me/email-confirmations";
 
     String RESOLVE             = "/resolve";

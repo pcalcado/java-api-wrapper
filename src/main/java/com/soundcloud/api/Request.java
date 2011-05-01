@@ -34,8 +34,18 @@ public class Request implements Iterable<NameValuePair> {
        }
     }
 
+    /**
+     * @param resource  the resource to request
+     * @param args      optional string expansion arguments (passed to String#format)
+     * @throws java.util.IllegalFormatException - If a format string contains an illegal syntax,
+     * @return the request
+     */
     public static Request to(String resource, Object... args) {
-        return new Request(resource).with(args);
+        if (args != null &&
+            args.length > 0) {
+            resource = String.format(resource, args);
+        }
+        return new Request(resource);
     }
 
     /**

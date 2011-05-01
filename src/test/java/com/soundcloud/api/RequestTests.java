@@ -24,6 +24,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.IllegalFormatException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -142,7 +143,12 @@ public class RequestTests {
     }
 
     @Test
-    public void shouldHaveFactoryMethod() throws Exception {
-        assertThat(Request.to("/resource", "1", 2).toUrl(), equalTo("/resource?1=2"));
+    public void shouldDoStringFormattingInFactoryMethod() throws Exception {
+        assertThat(Request.to("/resource/%d", 200).toUrl(), equalTo("/resource/200"));
+    }
+
+    @Test(expected = IllegalFormatException.class)
+    public void shouldThrowIllegalFormatExceptionWhenInvalidParameters() throws Exception {
+        Request.to("/resource/%d", "int").toUrl();
     }
 }
