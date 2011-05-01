@@ -3,6 +3,7 @@ package com.soundcloud.api;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -36,13 +37,17 @@ public class Token implements Serializable {
     /**
      * Construct a new token from a JSON response
      * @param json the json response
-     * @throws JSONException JSON format error
+     * @throws IOException JSON format error
      */
-    public Token(JSONObject json) throws JSONException {
-        access = json.getString(ACCESS_TOKEN);
-        refresh = json.getString(REFRESH_TOKEN);
-        scope = json.getString(SCOPE);
-        expiresIn = System.currentTimeMillis() + json.getLong(EXPIRES_IN) * 1000;
+    public Token(JSONObject json) throws IOException {
+        try {
+            access = json.getString(ACCESS_TOKEN);
+            refresh = json.getString(REFRESH_TOKEN);
+            scope = json.getString(SCOPE);
+            expiresIn = System.currentTimeMillis() + json.getLong(EXPIRES_IN) * 1000;
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
     }
 
     /** Invalidates the access token */

@@ -38,6 +38,7 @@ task(createWrapper, dependsOn: ['compileJava', 'compileExamplesJava']) << {
     main = 'com.soundcloud.api.examples.CreateWrapper'
     classpath = sourceSets.main.runtimeClasspath + sourceSets.examples.classes
     args client_id, client_secret, login, password, env
+    systemProperties httpDebug
   }
 }
 

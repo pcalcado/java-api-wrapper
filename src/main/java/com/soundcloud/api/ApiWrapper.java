@@ -27,7 +27,6 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRequestDirector;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -39,7 +38,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -105,7 +103,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
         if (username == null || password == null) {
             throw new IllegalArgumentException("username or password is null");
         }
-        mToken = requestToken(new Params(
+        mToken = requestToken(Request.to(Endpoints.TOKEN).with(
                 "grant_type", PASSWORD,
                 "client_id", mClientId,
                 "client_secret", mClientSecret,
@@ -118,7 +116,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
         if (code == null) {
             throw new IllegalArgumentException("username or password is null");
         }
-        mToken = requestToken(new Params(
+        mToken = requestToken(Request.to(Endpoints.TOKEN).with(
                 "grant_type", AUTHORIZATION_CODE,
                 "client_id", mClientId,
                 "client_secret", mClientSecret,
@@ -128,7 +126,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override public Token signupToken() throws IOException {
-        final Token signup = requestToken(new Params(
+        final Token signup = requestToken(Request.to(Endpoints.TOKEN).with(
                 "grant_type", CLIENT_CREDENTIALS,
                 "client_id", mClientId,
                 "client_secret", mClientSecret));
@@ -141,7 +139,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     @Override public Token refreshToken() throws IOException {
         if (mToken == null || mToken.refresh == null) throw new IllegalStateException("no refresh token available");
-        mToken = requestToken(new Params(
+        mToken = requestToken(Request.to(Endpoints.TOKEN).with(
                 "grant_type", REFRESH_TOKEN,
                 "client_id", mClientId,
                 "client_secret", mClientSecret,
@@ -151,7 +149,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     @Override public Token exchangeToken(String oauth1AccessToken) throws IOException {
         if (oauth1AccessToken == null) throw new IllegalArgumentException("need access token");
-        mToken = requestToken(new Params(
+        mToken = requestToken(Request.to(Endpoints.TOKEN).with(
                 "grant_type", OAUTH1_TOKEN,
                 "client_id", mClientId,
                 "client_secret", mClientSecret,
@@ -170,8 +168,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     public URI loginViaFacebook() {
         return getURI(
-                Endpoints.FACEBOOK_LOGIN,
-                new Params(
+                Request.to(Endpoints.FACEBOOK_LOGIN).with(
                         "redirect_uri", mRedirectUri,
                         "client_id", mClientId,
                         "response_type", "code"
@@ -181,52 +178,42 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     /**
      * Constructs URI path for a given resource.
-     * @param resource  the resource to access
-     * @param params    request parameters
+     * @param request   the resource to access
      * @param ssl       whether to use SSL or not
      * @return a valid URI
      */
-    public URI getURI(String resource, Params params, boolean ssl) {
-        return URI.create(
-                (ssl ? env.sslHost : env.host).toURI() + resource +
-                        (params == null ? "" : "?" + params.queryString()));
+    public URI getURI(Request request, boolean ssl) {
+        return URI.create((ssl ? env.sslHost : env.host).toURI()).resolve(request.toUrl());
     }
 
     /**
      * Request an OAuth2 token from SoundCloud
      * @throws java.io.IOException network error
      * @throws com.soundcloud.api.CloudAPI.InvalidTokenException unauthorized
-     * @see Endpoints#TOKEN
      */
-    protected Token requestToken(Params params) throws IOException {
-        HttpPost post = new HttpPost(Endpoints.TOKEN);
-        post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-        post.setEntity(new StringEntity(params.queryString()));
-        HttpResponse response = getHttpClient().execute(env.sslHost, post);
-
+    protected Token requestToken(Request request) throws IOException {
+        HttpResponse response = getHttpClient().execute(env.sslHost, request.buildRequest(HttpPost.class));
         final int status = response.getStatusLine().getStatusCode();
-        final String json = Http.getString(response);
-        if (json == null || json.length() == 0) throw new IOException("JSON response is empty");
-        try {
-            JSONObject resp = new JSONObject(json);
-            switch (status) {
-                case HttpStatus.SC_OK:
-                    final Token token = new Token(resp);
-                    if (listeners != null) {
-                        for (TokenStateListener l : listeners) l.onTokenRefreshed(token);
-                    }
-                    return token;
-                case HttpStatus.SC_UNAUTHORIZED:
-                    String error = resp.getString("error");
-                    throw new InvalidTokenException(status, error);
-                default:
-                    throw new IOException("HTTP error " + status + " " + resp.getString("error"));
+
+        if (status == HttpStatus.SC_OK) {
+            final Token token = new Token(Http.getJSON(response));
+            if (listeners != null) {
+                for (TokenStateListener l : listeners) l.onTokenRefreshed(token);
             }
-        } catch (JSONException e) {
-            throw new IOException("could not parse JSON document: " +
-                    (json.length() > 80 ? (json.substring(0, 79) + "...") : json));
+            return token;
+        } else {
+            String error = null;
+            try {
+                error = Http.getJSON(response).getString("error");
+            } catch (IOException ignored) {
+            } catch (JSONException ignored) {
+            }
+            throw status == HttpStatus.SC_UNAUTHORIZED ?
+                    new InvalidTokenException(status, error) :
+                    new IOException(status+" "+response.getStatusLine().getReasonPhrase()+" "+error);
         }
     }
+
 
 
     /**
@@ -330,7 +317,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     @Override
     public long resolve(String url) throws IOException {
-        HttpResponse resp = getContent(Endpoints.RESOLVE, new Params("url", url));
+        HttpResponse resp = get(Request.to(Endpoints.RESOLVE).with("url", url));
         if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
             Header location = resp.getFirstHeader("Location");
             if (location != null) {
@@ -351,27 +338,21 @@ public class ApiWrapper implements CloudAPI, Serializable {
         return path + (path.contains("?") ? "&" : "?") + "oauth_token=" + getToken();
     }
 
-    @Override public HttpResponse getContent(String resource) throws IOException {
-        return getContent(resource, null);
+
+    @Override public HttpResponse get(Request request) throws IOException {
+        return execute(request.buildRequest(HttpGet.class));
     }
 
-    @Override public HttpResponse getContent(String resource, Params params) throws IOException {
-        if (params == null) params = new Params();
-        return execute(params.buildRequest(HttpGet.class, resource));
+    @Override public HttpResponse put(Request request) throws IOException {
+        return execute(request.buildRequest(HttpPut.class));
     }
 
-    @Override public HttpResponse putContent(String resource, Params params) throws IOException {
-        if (params == null) params = new Params();
-        return execute(params.buildRequest(HttpPut.class, resource));
+    @Override public HttpResponse post(Request request) throws IOException {
+        return execute(request.buildRequest(HttpPost.class));
     }
 
-    @Override public HttpResponse postContent(String resource, Params params) throws IOException {
-        if (params == null) params = new Params();
-        return execute(params.buildRequest(HttpPost.class, resource));
-    }
-
-    @Override public HttpResponse deleteContent(String resource) throws IOException {
-        return execute(new Params().buildRequest(HttpDelete.class, resource));
+    @Override public HttpResponse delete(Request request) throws IOException {
+        return execute(request.buildRequest(HttpDelete.class));
     }
 
     @Override public Token getToken() {

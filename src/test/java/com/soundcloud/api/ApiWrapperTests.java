@@ -106,7 +106,6 @@ public class ApiWrapperTests {
         api.exchangeToken(null);
     }
 
-
     @Test
     public void shouldGetTokensWhenLoggingIn() throws Exception {
         layer.addPendingHttpResponse(200, "{\n" +
@@ -216,23 +215,23 @@ public class ApiWrapperTests {
     @Test
     public void shouldGetContent() throws Exception {
         layer.addHttpResponseRule("/some/resource?a=1", "response");
-        assertThat(Http.getString(api.getContent("/some/resource", new Params("a", "1"))),
+        assertThat(Http.getString(api.get(Request.to("/some/resource").with("a", "1"))),
                 equalTo("response"));
     }
 
     @Test
     public void shouldPostContent() throws Exception {
         HttpResponse resp = mock(HttpResponse.class);
-        layer.addHttpResponseRule("POST", "/foo/something?a=1", resp);
-        assertThat(api.postContent("/foo/something", new Params("a", 1)),
+        layer.addHttpResponseRule("POST", "/foo/something", resp);
+        assertThat(api.post(Request.to("/foo/something").with("a", 1)),
                 equalTo(resp));
     }
 
     @Test
     public void shouldPutContent() throws Exception {
         HttpResponse resp = mock(HttpResponse.class);
-        layer.addHttpResponseRule("PUT", "/foo/something?a=1", resp);
-        assertThat(api.putContent("/foo/something", new Params("a", 1)),
+        layer.addHttpResponseRule("PUT", "/foo/something", resp);
+        assertThat(api.put(Request.to("/foo/something").with("a", 1)),
                 equalTo(resp));
     }
 
@@ -240,7 +239,7 @@ public class ApiWrapperTests {
     public void shouldDeleteContent() throws Exception {
         HttpResponse resp = mock(HttpResponse.class);
         layer.addHttpResponseRule("DELETE", "/foo/something", resp);
-        assertThat(api.deleteContent("/foo/something"), equalTo(resp));
+        assertThat(api.delete(new Request("/foo/something")), equalTo(resp));
     }
 
     @Test
@@ -257,11 +256,10 @@ public class ApiWrapperTests {
         assertThat(h.getValue(), equalTo("OAuth invalidated"));
     }
 
-
     @Test
     public void shouldGenerateUrlWithoutParameters() throws Exception {
         assertThat(
-                api.getURI("/my-resource", null, true).toString(),
+                api.getURI(new Request("/my-resource"), true).toString(),
                 equalTo("https://api.sandbox-soundcloud.com/my-resource")
         );
     }
@@ -269,7 +267,7 @@ public class ApiWrapperTests {
     @Test
     public void shouldGenerateUrlWithoutSSL() throws Exception {
         assertThat(
-                api.getURI("/my-resource", null, false).toString(),
+                api.getURI(new Request("/my-resource"), false).toString(),
                 equalTo("http://api.sandbox-soundcloud.com/my-resource")
         );
     }
@@ -277,7 +275,7 @@ public class ApiWrapperTests {
     @Test
     public void shouldGenerateUrlWithParameters() throws Exception {
         assertThat(
-                api.getURI("/my-resource", new Params("foo", "bar"), true).toString(),
+                api.getURI(Request.to("/my-resource").with("foo", "bar"), true).toString(),
                 equalTo("https://api.sandbox-soundcloud.com/my-resource?foo=bar")
         );
     }

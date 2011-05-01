@@ -4,6 +4,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.message.BasicNameValuePair;
@@ -18,25 +19,23 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Convenience class for construction HTTP requests.
+ * Convenience class for constructing HTTP requests.
  */
-public class Params implements Iterable<NameValuePair> {
-    Token token;
-    Map<String,File> files;
-    public final List<NameValuePair> params = new ArrayList<NameValuePair>();
+public class Request implements Iterable<NameValuePair> {
+    private List<NameValuePair> params = new ArrayList<NameValuePair>(); // XXX should probably be lazy
+    private Map<String,File> files;
+    private Token mToken;
+    private String mResource;
     private TransferProgressListener listener;
 
-    /**
-     * <code>new Params("page", 10, offset", 0).queryString() // page=10&offset=0
-     * @param args a list of arguments
-     */
-    public Params(Object... args) {
-        if (args != null) {
-            if (args.length % 2 != 0) throw new IllegalArgumentException("need even number of arguments");
-            for (int i = 0; i < args.length; i += 2) {
-                this.add(args[i].toString(), args[i + 1]);
-            }
-        }
+    public Request(String... resource) {
+       if (resource != null && resource.length > 0) {
+           mResource = resource[0];
+       }
+    }
+
+    public static Request to(String resource, Object... args) {
+        return new Request(resource).with(args);
     }
 
     /**
@@ -45,18 +44,31 @@ public class Params implements Iterable<NameValuePair> {
      * @param value the value
      * @return this
      */
-    public Params add(String name, Object value) {
+    public Request add(String name, Object value) {
         params.add(new BasicNameValuePair(name, String.valueOf(value)));
         return this;
     }
 
     /**
+     * @param args a list of arguments
+     */
+    public Request with(Object... args) {
+       if (args != null) {
+            if (args.length % 2 != 0) throw new IllegalArgumentException("need even number of arguments");
+            for (int i = 0; i < args.length; i += 2) {
+                this.add(args[i].toString(), args[i + 1]);
+            }
+       }
+       return this;
+    }
+
+    /**
      * The request should be made with a specific token.
-     * @param t the token
+     * @param token the token
      * @return this
      */
-    public Params withToken(Token t) {
-        token = t;
+    public Request usingToken(Token token) {
+        mToken = token;
         return this;
     }
 
@@ -74,8 +86,12 @@ public class Params implements Iterable<NameValuePair> {
     }
 
     /** @return an URL with the query string parameters appended */
-    public String url(String url) {
-        return params.isEmpty() ? url : url + "?" + queryString();
+    public String toUrl(String resource) {
+        return params.isEmpty() ? resource : resource + "?" + queryString();
+    }
+
+    public String toUrl() {
+        return toUrl(mResource);
     }
 
     /**
@@ -84,7 +100,7 @@ public class Params implements Iterable<NameValuePair> {
      * @param file  the file to be submitted
      * @return this
      */
-    public Params addFile(String name, File file) {
+    public Request withFile(String name, File file) {
         if (files == null) files = new HashMap<String,File>();
         if (file != null)  files.put(name, file);
         return this;
@@ -92,7 +108,7 @@ public class Params implements Iterable<NameValuePair> {
 
 
     /** Registers a listener for receiving notifications about transfer progress */
-    public Params setProgressListener(TransferProgressListener listener) {
+    public Request setProgressListener(TransferProgressListener listener) {
         this.listener = listener;
         return this;
     }
@@ -100,41 +116,48 @@ public class Params implements Iterable<NameValuePair> {
     /**
      * Builds a request with the given set of parameters and files.
      * @param method    the type of request to use
-     * @param resource  the resource to access
      * @param <T>       the type of request to use
      * @return HTTP request, prepared to be executed
      */
-    public <T extends HttpRequestBase> T buildRequest(Class<T> method, String resource) {
+    public <T extends HttpRequestBase> T buildRequest(Class<T> method) {
         try {
             HttpRequestBase request = method.newInstance();
-            if (token != null) {
-                request.addHeader(ApiWrapper.createOAuthHeader(token));
+            // POST/PUT ?
+            if (request instanceof HttpEntityEnclosingRequestBase) {
+                HttpEntityEnclosingRequestBase enclosingRequest =
+                        (HttpEntityEnclosingRequestBase) request;
+                // multipart ?
+                if (files != null && !files.isEmpty()) {
+                    MultipartEntity multiPart = new MultipartEntity();
+                    for (Map.Entry<String,File> e : files.entrySet()) {
+                        multiPart.addPart(e.getKey(), new FileBody(e.getValue()));
+                    }
+                    for (NameValuePair pair : params) {
+                        multiPart.addPart(pair.getName(), new StringBodyNoHeaders(pair.getValue()));
+                    }
+                    enclosingRequest.setEntity(listener == null ? multiPart :
+                        new CountingMultipartEntity(multiPart, listener));
+                // form-urlencoded?
+                } else if (!params.isEmpty()) {
+                    request.setHeader("Content-Type", "application/x-www-form-urlencoded");
+                    enclosingRequest.setEntity(new StringEntity(queryString()));
+                }
+                request.setURI(URI.create(mResource));
+            } else { // just plain GET/DELETE/...
+                request.setURI(URI.create(toUrl()));
             }
 
-            if (files != null && !files.isEmpty() && request instanceof HttpEntityEnclosingRequestBase) {
-                MultipartEntity entity = new MultipartEntity();
-                for (Map.Entry<String,File> e : files.entrySet()) {
-                    entity.addPart(e.getKey(), new FileBody(e.getValue()));
-                }
-                for (NameValuePair pair : params) {
-                    try {
-                        entity.addPart(pair.getName(), new StringBodyNoHeaders(pair.getValue()));
-                    } catch (UnsupportedEncodingException ignored) {
-                    }
-                }
-
-                ((HttpEntityEnclosingRequestBase)request).setEntity(listener == null ? entity :
-                    new CountingMultipartEntity(entity, listener));
-
-                request.setURI(URI.create(resource));
-            } else {
-                request.setURI(URI.create(url(resource)));
+            if (mToken != null) {
+                request.addHeader(ApiWrapper.createOAuthHeader(mToken));
             }
             //noinspection unchecked
             return (T) request;
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            // XXX really rethrow?
             throw new RuntimeException(e);
         }
     }

@@ -10,6 +10,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +23,12 @@ public class Http {
     public static final int BUFFER_SIZE = 8192;
     public static final int TIMEOUT = 20 * 1000;
 
-    private Http() {}
+    private Http() {
+    }
 
     /**
      * Returns a String representation of the response
+     *
      * @param response an HTTP response
      * @return the content body
      * @throws IOException network error
@@ -54,13 +58,24 @@ public class Http {
         return sb.toString();
     }
 
+    public static JSONObject getJSON(HttpResponse response) throws IOException {
+        final String json = Http.getString(response);
+        if (json == null || json.length() == 0) throw new IOException("JSON response is empty");
+        try {
+            return new JSONObject(json);
+        } catch (JSONException e) {
+            throw new IOException("could not parse JSON document: " +
+                    (json.length() > 80 ? (json.substring(0, 79) + "...") : json));
+        }
+    }
+
 
     /**
-     * @see <a href="http://developer.android.com/reference/android/net/http/AndroidHttpClient.html#newInstance(java.lang.String, android.content.Context)">
-     *     android.net.http.AndroidHttpClient#newInstance(String, Context)</a>
      * @return the default HttpParams
+     * @see <a href="http://developer.android.com/reference/android/net/http/AndroidHttpClient.html#newInstance(java.lang.String, android.content.Context)">
+     *      android.net.http.AndroidHttpClient#newInstance(String, Context)</a>
      */
-    public static HttpParams defaultParams(){
+    public static HttpParams defaultParams() {
         final HttpParams params = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(params, TIMEOUT);
         HttpConnectionParams.setSoTimeout(params, TIMEOUT);
@@ -73,7 +88,8 @@ public class Http {
         // fix contributed by Bjorn Roche XXX check if still needed
         params.setBooleanParameter("http.protocol.expect-continue", false);
         params.setParameter(ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE, new ConnPerRoute() {
-            @Override public int getMaxForRoute(HttpRoute httpRoute) {
+            @Override
+            public int getMaxForRoute(HttpRoute httpRoute) {
                 return ConnPerRouteBean.DEFAULT_MAX_CONNECTIONS_PER_ROUTE * 3;
             }
         });

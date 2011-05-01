@@ -95,42 +95,32 @@ public interface CloudAPI {
     void invalidateToken();
 
     /**
-     * @param resource resource to GET
+     * @param request resource to GET
      * @return the HTTP response
      * @throws IOException IO/Error
      */
-    HttpResponse getContent(String resource) throws IOException;
+    HttpResponse get(Request request) throws IOException;
 
     /**
-     * @param resource resource to GET
-     * @param params query parameters
+     * @param request resource to POST
      * @return the HTTP response
      * @throws IOException IO/Error
      */
-    HttpResponse getContent(String resource, Params params) throws IOException;
+    HttpResponse post(Request request) throws IOException;
 
     /**
-     * @param resource resource to POST
-     * @param params query parameters
+     * @param request resource to PUT
      * @return the HTTP response
      * @throws IOException IO/Error
      */
-    HttpResponse postContent(String resource, Params params) throws IOException;
+    HttpResponse put(Request request) throws IOException;
 
     /**
-     * @param resource resource to PUT
-     * @param params query parameters
+     * @param request resource to DELETE
      * @return the HTTP response
      * @throws IOException IO/Error
      */
-    HttpResponse putContent(String resource, Params params) throws IOException;
-
-    /**
-     * @param resource resource to DELETE
-     * @return the HTTP response
-     * @throws IOException IO/Error
-     */
-    HttpResponse deleteContent(String resource) throws IOException;
+    HttpResponse delete(Request request) throws IOException;
 
     /** Adds current access token to url
      * @param url url to be signed

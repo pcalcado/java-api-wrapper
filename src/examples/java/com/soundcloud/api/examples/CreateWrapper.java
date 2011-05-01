@@ -30,6 +30,7 @@ public final class CreateWrapper {
             Token token = wrapper.login(args[2], args[3]);
             System.out.println("got token from server: " + token);
             wrapper.toFile(WRAPPER_SER);
+
             System.out.println("wrapper serialised to " + WRAPPER_SER);
         }
     }
