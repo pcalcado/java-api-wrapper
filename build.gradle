@@ -34,23 +34,19 @@ httpDebug = ['org.apache.commons.logging.Log': 'org.apache.commons.logging.impl.
              'org.apache.commons.logging.simplelog.log.org.apache.http': 'DEBUG',
              'org.apache.commons.logging.simplelog.log.org.apache.http.wire': 'ERROR']
 
-task(createWrapper, dependsOn: ['compileJava', 'compileExamplesJava']) << {
-  javaexec {
-    main = 'com.soundcloud.api.examples.CreateWrapper'
-    classpath = sourceSets.main.runtimeClasspath + sourceSets.examples.classes
-    args client_id, client_secret, login, password, env
-    systemProperties httpDebug
+def exampleTask(name, mainClass, arguments) {
+  task(name, dependsOn: ['compileJava', 'compileExamplesJava']) << {
+    javaexec {
+      main = 'com.soundcloud.api.examples.'+mainClass
+      classpath = sourceSets.main.runtimeClasspath + sourceSets.examples.classes
+      systemProperties httpDebug
+      args arguments.call()
+    }
   }
 }
-
-task(getResource, dependsOn: ['compileJava', 'compileExamplesJava']) << {
-  javaexec {
-    main = 'com.soundcloud.api.examples.GetResource'
-    classpath = sourceSets.main.runtimeClasspath + sourceSets.examples.classes
-    args resource
-    systemProperties httpDebug
-  }
-}
+exampleTask('createWrapper', 'CreateWrapper', { [client_id, client_secret, login, password, env] })
+exampleTask('getResource',   'GetResource',   { resource })
+exampleTask('uploadFile',    'UploadFile',    { file })
 
 task writePom << {
   pom {
