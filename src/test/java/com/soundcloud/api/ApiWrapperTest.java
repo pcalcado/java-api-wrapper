@@ -98,12 +98,12 @@ public class ApiWrapperTest {
                 "  \"scope\":         \"*\",\n" +
                 "  \"refresh_token\": \"04u7h-r3fr35h-70k3n\"\n" +
                 "}");
-        api.exchangeToken("oldtoken");
+        api.exchangeOAuth1Token("oldtoken");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void exchangeOAuth1TokenWithEmptyTokenShouldThrow() throws Exception {
-        api.exchangeToken(null);
+        api.exchangeOAuth1Token(null);
     }
 
     @Test

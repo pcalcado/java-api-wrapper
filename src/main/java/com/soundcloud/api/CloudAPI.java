@@ -34,8 +34,8 @@ public interface CloudAPI {
     String USER_AGENT         = "SoundCloud Java Wrapper "+ VERSION;
 
     /**
-     * Log in to SoundCloud using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.2">
-     * Resource Owner Password Credentials</a>
+     * Request a token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.2">
+     * Resource Owner Password Credentials</a>.
      *
      * @param username SoundCloud username
      * @param password SoundCloud password
@@ -47,8 +47,8 @@ public interface CloudAPI {
 
 
     /**
-     * Log in to SoundCloud using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.1">
-     * Authorization Code</a>
+     * Request a token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.1">
+     * Authorization Code</a>.
      *
      * @param code the authorization code
      * @return a valid token
@@ -63,7 +63,8 @@ public interface CloudAPI {
      *
      * Note that this token is <b>not</b> set as the current token in the wrapper - it should only be used
      * for one request (typically the signup / user creation request).
-     * Also note that not all apps are allowed to use this token type.
+     * Also note that not all apps are allowed to request this token type (the wrapper throws
+     * InvalidTokenException in this case).
      *
      * @return a valid token
      * @throws IOException IO/Error
@@ -81,15 +82,17 @@ public interface CloudAPI {
     Token refreshToken() throws IOException;
 
     /**
-     * Exchange an OAuth1 Token for new OAuth2 tokens
+     * Exchange an OAuth1 Token for new OAuth2 tokens. The old OAuth1 token will be expired if
+     * the exchange is successful.
+     *
      * @param oauth1AccessToken a valid OAuth1 access token, registered with the same client
      * @return a valid token
      * @throws IOException IO/Error
      * @throws InvalidTokenException Token error
      */
-    Token exchangeToken(String oauth1AccessToken) throws IOException;
+    Token exchangeOAuth1Token(String oauth1AccessToken) throws IOException;
 
-    /** Called to invalidate the current token */
+    /** Called to invalidate the current access token */
     void invalidateToken();
 
     /**
@@ -124,7 +127,7 @@ public interface CloudAPI {
      * Resolve the given SoundCloud URI
      *
      * @param uri SoundCloud model URI, e.g. http://soundcloud.com/bob
-     * @return the id or -1 if not resolved successfully
+     * @return the id or -1 if uri not found
      * @throws IOException network errors
      */
     long resolve(String uri) throws IOException;
@@ -135,6 +138,11 @@ public interface CloudAPI {
     /** Set the current token used by the wrapper */
     void setToken(Token token);
 
+    /**
+     * Registers a listener. The listener will be informed when an access token was found
+     * to be invalid, and when the token had to be refreshed.
+     * @param listener token listener
+     */
     void addTokenStateListener(TokenStateListener listener);
 
     /**

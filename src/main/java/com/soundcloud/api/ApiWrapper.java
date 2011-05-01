@@ -146,7 +146,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
         return mToken;
     }
 
-    @Override public Token exchangeToken(String oauth1AccessToken) throws IOException {
+    @Override public Token exchangeOAuth1Token(String oauth1AccessToken) throws IOException {
         if (oauth1AccessToken == null) throw new IllegalArgumentException("need access token");
         mToken = requestToken(Request.to(Endpoints.TOKEN).with(
                 "grant_type", OAUTH1_TOKEN,
