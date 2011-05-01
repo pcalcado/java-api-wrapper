@@ -53,7 +53,7 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
 
     @Test(expected = CloudAPI.InvalidTokenException.class)
     public void shouldNotGetASignupTokenWhenInofficialApp() throws Exception {
-        api.signupToken();
+        api.clientCredentials();
     }
 
     @Test

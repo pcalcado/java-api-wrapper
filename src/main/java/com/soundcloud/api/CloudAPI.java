@@ -46,12 +46,6 @@ public interface CloudAPI {
      */
     Token login(String username, String password) throws IOException;
 
-    /**
-     * Request login/signup via Facebook.
-     * After the Facebook login, control will go to the redirect URI (wrapper specific).
-     * @return the URI to open in a browser/WebView etc.
-     */
-    URI loginViaFacebook();
 
     /**
      * Log in to SoundCloud using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.1">
@@ -65,13 +59,18 @@ public interface CloudAPI {
     Token authorizationCode(String code) throws IOException;
 
     /**
-     * Request a signup token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.4">
-     * Client Credentials</a>. Note that not all apps are allowed to use this token type.
+     * Request a "signup" token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.4">
+     * Client Credentials</a>.
+     *
+     * Note that this token is <b>not</b> set as the current token in the wrapper - it should only be used
+     * for one request (typically the signup / user creation request).
+     * Also note that not all apps are allowed to use this token type.
+     *
      * @return a valid token
      * @throws IOException IO/Error
      * @throws com.soundcloud.api.CloudAPI.InvalidTokenException if requested scope is not available
      */
-    Token signupToken() throws IOException;
+    Token clientCredentials() throws IOException;
 
     /**
      * Tries to refresh the currently used access token with the refresh token
@@ -122,12 +121,6 @@ public interface CloudAPI {
      */
     HttpResponse delete(Request request) throws IOException;
 
-    /** Adds current access token to url
-     * @param url url to be signed
-     * @return signed url
-     */
-    @Deprecated String signUrl(String url);
-
     /**
      * Resolve the given SoundCloud URI
      *
@@ -137,9 +130,20 @@ public interface CloudAPI {
      */
     long resolve(String uri) throws IOException;
 
+    /** Obtain the current token */
     Token getToken();
+
+    /** Set the current token used by the wrapper */
     void setToken(Token token);
+
     void addTokenStateListener(TokenStateListener listener);
+
+    /**
+     * Request login/signup via Facebook.
+     * After the Facebook login, control will go to the redirect URI (wrapper specific).
+     * @return the URI to open in a browser/WebView etc.
+     */
+    URI loginViaFacebook();
 
     /**
      * The environment to operate against. Use SANDBOX for testing your app, and

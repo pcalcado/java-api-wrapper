@@ -74,7 +74,7 @@ public class ApiWrapperTest {
     }
 
     @Test
-    public void signupToken() throws Exception {
+    public void clientCredentials() throws Exception {
         layer.addPendingHttpResponse(200, "{\n" +
                 "  \"access_token\":  \"04u7h-4cc355-70k3n\",\n" +
                 "  \"expires_in\":    3600,\n" +
@@ -82,7 +82,7 @@ public class ApiWrapperTest {
                 "  \"refresh_token\": \"04u7h-r3fr35h-70k3n\"\n" +
                 "}");
 
-        Token t = api.signupToken();
+        Token t = api.clientCredentials();
         assertThat(t.access, equalTo("04u7h-4cc355-70k3n"));
         assertThat(t.refresh, equalTo("04u7h-r3fr35h-70k3n"));
         assertThat(t.scope, equalTo("signup"));

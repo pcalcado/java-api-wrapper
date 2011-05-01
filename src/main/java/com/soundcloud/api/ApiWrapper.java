@@ -125,7 +125,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
         return mToken;
     }
 
-    @Override public Token signupToken() throws IOException {
+    @Override public Token clientCredentials() throws IOException {
         final Token signup = requestToken(Request.to(Endpoints.TOKEN).with(
                 "grant_type", CLIENT_CREDENTIALS,
                 "client_id", mClientId,
@@ -333,11 +333,6 @@ public class ApiWrapper implements CloudAPI, Serializable {
         }
         return -1;
     }
-
-    @Override public String signUrl(String path) {
-        return path + (path.contains("?") ? "&" : "?") + "oauth_token=" + getToken();
-    }
-
 
     @Override public HttpResponse get(Request request) throws IOException {
         return execute(request.buildRequest(HttpGet.class));

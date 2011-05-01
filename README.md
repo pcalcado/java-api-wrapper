@@ -4,7 +4,7 @@ OAuth2 compatible SoundCloud API wrapper
 
 ## Build + Test
 
-The java-api-wrapper used the build system [gradle][]:
+The java-api-wrapper uses the build system [gradle][]:
 
     $ brew install gradle (OSX+homebrew)
     $ git clone git://github.com/soundcloud/java-api-wrapper.git
@@ -13,18 +13,7 @@ The java-api-wrapper used the build system [gradle][]:
     $ gradle test     # run tests
 
 You don't have to use gradle - the wrapper comes with a `pom.xml` file which
-can be used to build and test the project (`mvn install`).
-
-## Generate project files for various IDEs
-
-If you want to work on the code in an IDE instead of a text editor you can
-easily create project files with gradle:
-
-    $ gradle idea     # Intellij IDEA
-    $ gradle eclipse  # Eclipse
-
-Please refrain from committing any IDE configuration files to the repo, as
-these can easily be regenerated.
+can be used to build and test the project with Maven (`mvn install`).
 
 ## Examples
 
@@ -47,6 +36,17 @@ You can use gradle tasks to compile and run these examples with one command:
 
     $ gradle getResource -Presource=/me
     $ gradle uploadFile  -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
+
+## Generate project files for various IDEs
+
+If you want to work on the code in an IDE instead of a text editor you can
+easily create project files with gradle:
+
+    $ gradle idea     # Intellij IDEA
+    $ gradle eclipse  # Eclipse
+
+Please refrain from committing any IDE configuration files to the repo, as
+these can easily be regenerated.
 
 ## Note on Patches/Pull Requests
 

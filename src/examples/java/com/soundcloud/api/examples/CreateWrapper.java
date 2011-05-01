@@ -21,13 +21,13 @@ public final class CreateWrapper {
             System.exit(1);
         } else {
             final ApiWrapper wrapper = new ApiWrapper(
-                    args[0],
-                    args[1],
-                    null,
-                    null,
+                    args[0] /* client_id */,
+                    args[1] /* client_secret */,
+                    null    /* redirect URI */,
+                    null    /* token */,
                     args.length == 5 ? CloudAPI.Env.valueOf(args[4].toUpperCase()) : CloudAPI.Env.SANDBOX);
 
-            Token token = wrapper.login(args[2], args[3]);
+            Token token = wrapper.login(args[2] /* login */, args[3] /* password */);
             System.out.println("got token from server: " + token);
             wrapper.toFile(WRAPPER_SER);
 
