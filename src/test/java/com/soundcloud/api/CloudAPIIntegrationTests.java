@@ -13,7 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CloudAPIIntegrationTests implements Request.Track, Endpoints {
+public class CloudAPIIntegrationTests implements Params.Track, Endpoints {
     // http://sandbox-soundcloud.com/you/apps/java-api-wrapper-test-app
     static final String CLIENT_ID     = "yH1Jv2C5fhIbZfGTpKtujQ";
     static final String CLIENT_SECRET = "C6o8jc517b6PIw0RKtcfQsbOK3BjGpxWFLg977UiguY";
