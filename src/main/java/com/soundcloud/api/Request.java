@@ -20,6 +20,18 @@ import java.util.Map;
 
 /**
  * Convenience class for constructing HTTP requests.
+ *
+ * Example:
+ * <code>
+ *   <pre>
+ *  HttpRequest request = Request.to("/tracks")
+ *     .with("track[user]", 1234)
+ *     .withFile("track[asset_data]", new File("track.mp3")
+ *     .buildRequest(HttpPost.class);
+ *
+ *  httpClient.execute(request);
+ *   </pre>
+ *  </code>
  */
 public class Request implements Iterable<NameValuePair> {
     private List<NameValuePair> params = new ArrayList<NameValuePair>(); // XXX should probably be lazy
@@ -66,6 +78,7 @@ public class Request implements Iterable<NameValuePair> {
 
     /**
      * @param args a list of arguments
+     * @return this
      */
     public Request with(Object... args) {
        if (args != null) {
@@ -100,7 +113,10 @@ public class Request implements Iterable<NameValuePair> {
         return URLEncodedUtils.format(params, "UTF-8");
     }
 
-    /** @return an URL with the query string parameters appended */
+    /**
+     * @param  resource the resource
+     * @return an URL with the query string parameters appended
+     */
     public String toUrl(String resource) {
         return params.isEmpty() ? resource : resource + "?" + queryString();
     }
@@ -122,7 +138,10 @@ public class Request implements Iterable<NameValuePair> {
     }
 
 
-    /** Registers a listener for receiving notifications about transfer progress */
+    /**
+     * @param listener a listener for receiving notifications about transfer progress
+     * @return this
+     */
     public Request setProgressListener(TransferProgressListener listener) {
         this.listener = listener;
         return this;

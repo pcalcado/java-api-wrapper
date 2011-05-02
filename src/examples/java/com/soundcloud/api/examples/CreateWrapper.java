@@ -29,9 +29,9 @@ public final class CreateWrapper {
             Token token = wrapper.login(args[2] /* login */, args[3] /* password */);
             System.out.println("got token from server: " + token);
 
-            // for this example the whole wrapper is serialised to disk -
+            // in this example the whole wrapper is serialised to disk -
             // in a real application you would just save the tokens and usually have the client_id/client_secret
-            // hardcoded in the application
+            // hardcoded in the application, as they rarely change
             wrapper.toFile(WRAPPER_SER);
 
             System.out.println("wrapper serialised to " + WRAPPER_SER);
