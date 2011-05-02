@@ -7,6 +7,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.File;
@@ -213,4 +214,18 @@ public class Request implements Iterable<NameValuePair> {
         public void transferred(long amount);
     }
 
+
+    static class StringBodyNoHeaders extends StringBody {
+        public StringBodyNoHeaders(String value) throws UnsupportedEncodingException {
+            super(value);
+        }
+
+        @Override public String getMimeType() {
+            return null;
+        }
+
+        @Override public String getTransferEncoding() {
+            return null;
+        }
+    }
 }

@@ -10,7 +10,7 @@ import org.apache.http.HttpHost;
 public enum Env {
     /** The main production site, http://soundcloud.com */
     LIVE("api.soundcloud.com"),
-    /** For testig, http://sandbox-soundcloud.com */
+    /** For testing, http://sandbox-soundcloud.com */
     SANDBOX("api.sandbox-soundcloud.com");
 
     public final HttpHost host, sslHost;
