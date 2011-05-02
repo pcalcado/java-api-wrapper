@@ -96,7 +96,7 @@ See LICENSE for details.
 
 [gradle]: http://www.gradle.org/
 [urbanstew]: http://urbanstew.org/
-[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/index.html
+[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/package-summary.html
 [soundcloudapi-java]: http://code.google.com/p/soundcloudapi-java/
 [CreateWrapper]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
 [GetResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/GetResource.java
