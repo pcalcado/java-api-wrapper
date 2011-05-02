@@ -37,14 +37,14 @@ public class RequestTest {
     @Test
     public void shouldBuildAQueryString() throws Exception {
         assertThat(
-                new Request().with("foo", 100, "baz", 22.3f, "met\u00f8l", false).toString(),
+                new Request().with("foo", 100, "baz", 22.3f, "met\u00f8l", false).queryString(),
                 equalTo("foo=100&baz=22.3&met%C3%B8l=false"));
     }
 
     @Test
     public void shouldHaveToStringAsQueryString() throws Exception {
         Request p = new Request().with("foo", 100, "baz", 22.3f);
-        assertThat(p.queryString(), equalTo(p.toString()));
+        assertThat(p.toString(), equalTo(p.queryString()));
     }
 
     @Test
@@ -133,11 +133,7 @@ public class RequestTest {
         HttpPost request = Request.to("/foo")
                 .with("key", "value")
                 .withFile("foo", new File("/tmp"))
-                .setProgressListener(new Request.TransferProgressListener() {
-                    @Override
-                    public void transferred(long amount) {
-                    }
-                })
+                .setProgressListener(mock(Request.TransferProgressListener.class))
                 .buildRequest(HttpPost.class);
         assertTrue(request.getEntity() instanceof CountingMultipartEntity);
     }
@@ -150,5 +146,16 @@ public class RequestTest {
     @Test(expected = IllegalFormatException.class)
     public void shouldThrowIllegalFormatExceptionWhenInvalidParameters() throws Exception {
         Request.to("/resource/%d", "int").toUrl();
+    }
+
+    @Test
+    public void toStringShouldWork() throws Exception {
+        assertThat(
+                new Request().with("1", "2").toString(),
+                equalTo("1=2"));
+
+        assertThat(
+                new Request("/foo").with("1", "2").toString(),
+                equalTo("/foo?1=2"));
     }
 }

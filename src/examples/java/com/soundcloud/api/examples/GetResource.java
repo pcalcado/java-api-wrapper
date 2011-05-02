@@ -5,7 +5,6 @@ import static com.soundcloud.api.examples.CreateWrapper.WRAPPER_SER;
 import com.soundcloud.api.ApiWrapper;
 import com.soundcloud.api.Http;
 import com.soundcloud.api.Request;
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 
@@ -25,18 +24,13 @@ public final class GetResource {
                     "Run CreateWrapper first to create it.");
             System.exit(1);
         } else {
-            final String resource = args[0];
             final ApiWrapper wrapper = ApiWrapper.fromFile(WRAPPER_SER);
+            final Request resource = Request.to(args[0]);
             System.out.println("GET " + resource);
             try {
-                HttpResponse resp = wrapper.get(Request.to(resource));
+                HttpResponse resp = wrapper.get(resource);
                 if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                    Header ct = resp.getFirstHeader("Content-Type");
-                    if (ct != null && ct.getValue().contains("application/json")) {
-                        System.out.println("\n" + Http.getJSON(resp).toString(4));
-                    } else {
-                        System.out.println("\n" + Http.getString(resp));
-                    }
+                    System.out.println("\n" + Http.getJSON(resp).toString(4));
                 } else {
                     System.err.println("Invalid status received: " + resp.getStatusLine());
                 }

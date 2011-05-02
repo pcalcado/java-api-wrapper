@@ -7,7 +7,6 @@ import com.soundcloud.api.Endpoints;
 import com.soundcloud.api.Http;
 import com.soundcloud.api.Params;
 import com.soundcloud.api.Request;
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 
@@ -40,12 +39,7 @@ public final class UploadFile {
 
                 if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_CREATED) {
                     System.out.println("201 Created");
-                    Header ct = resp.getFirstHeader("Content-Type");
-                    if (ct != null && ct.getValue().contains("application/json")) {
-                        System.out.println("\n" + Http.getJSON(resp).toString(4));
-                    } else {
-                        System.out.println("\n" + Http.getString(resp));
-                    }
+                    System.out.println("\n" + Http.getJSON(resp).toString(4));
                 } else {
                     System.err.println("Invalid status received: " + resp.getStatusLine());
                 }

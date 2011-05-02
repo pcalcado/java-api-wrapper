@@ -136,7 +136,7 @@ public class Request implements Iterable<NameValuePair> {
      */
     public <T extends HttpRequestBase> T buildRequest(Class<T> method) {
         try {
-            HttpRequestBase request = method.newInstance();
+            T request = method.newInstance();
             // POST/PUT ?
             if (request instanceof HttpEntityEnclosingRequestBase) {
                 HttpEntityEnclosingRequestBase enclosingRequest =
@@ -165,8 +165,7 @@ public class Request implements Iterable<NameValuePair> {
             if (mToken != null) {
                 request.addHeader(ApiWrapper.createOAuthHeader(mToken));
             }
-            //noinspection unchecked
-            return (T) request;
+            return request;
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -178,7 +177,7 @@ public class Request implements Iterable<NameValuePair> {
     }
 
     @Override public String toString() {
-        return queryString();
+        return mResource == null ? queryString() : toUrl();
     }
 
     @Override public Iterator<NameValuePair> iterator() {

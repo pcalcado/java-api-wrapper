@@ -9,7 +9,7 @@ The java-api-wrapper uses the build system [gradle][]:
     $ brew install gradle (OSX+homebrew)
     $ git clone git://github.com/soundcloud/java-api-wrapper.git
     $ cd java-api-wrapper
-    $ gradle jar      # build jar file
+    $ gradle jar      # build jar file (build/libs/java-api-wrapper-1.x.x.jar)
     $ gradle test     # run tests
 
 You don't have to use gradle - the wrapper comes with a `pom.xml` file which
