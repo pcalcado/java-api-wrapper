@@ -132,10 +132,10 @@ public interface CloudAPI {
      */
     long resolve(String uri) throws IOException;
 
-    /** Obtain the current token */
+    /** @return the current token */
     Token getToken();
 
-    /** Set the current token used by the wrapper */
+    /** @param token the token to be used */
     void setToken(Token token);
 
     /**

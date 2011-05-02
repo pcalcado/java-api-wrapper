@@ -16,8 +16,7 @@ public final class CreateWrapper {
 
     public static void main(String[] args) throws Exception {
         if (args.length < 4) {
-            System.err.println(CreateWrapper.class.getSimpleName() +
-                "client_id client_secret login password [sandbox|live]");
+            System.err.println("CreateWrapper client_id client_secret login password [sandbox|live]");
             System.exit(1);
         } else {
             final ApiWrapper wrapper = new ApiWrapper(
@@ -29,6 +28,10 @@ public final class CreateWrapper {
 
             Token token = wrapper.login(args[2] /* login */, args[3] /* password */);
             System.out.println("got token from server: " + token);
+
+            // for this example the whole wrapper is serialised to disk -
+            // in a real application you would just save the tokens and usually have the client_id/client_secret
+            // hardcoded in the application
             wrapper.toFile(WRAPPER_SER);
 
             System.out.println("wrapper serialised to " + WRAPPER_SER);

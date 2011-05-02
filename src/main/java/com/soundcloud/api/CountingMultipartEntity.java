@@ -12,7 +12,8 @@ class CountingMultipartEntity implements HttpEntity {
     private HttpEntity mDelegate;
     private Request.TransferProgressListener mListener;
 
-    public CountingMultipartEntity(HttpEntity delegate, Request.TransferProgressListener listener) {
+    public CountingMultipartEntity(HttpEntity delegate,
+                                   Request.TransferProgressListener listener) {
         super();
         mDelegate = delegate;
         mListener = listener;
