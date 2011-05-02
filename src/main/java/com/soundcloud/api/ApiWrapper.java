@@ -51,17 +51,24 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  * Interface with SoundCloud, using OAuth2.
  * This API wrapper makes a few assumptions - namely:
  * <ul>
  * <li>Server responses are always requested in JSON format</li>
- * <li>Refresh-token handling is transparent to the client application</li>
+ * <li>Refresh-token handling is transparent to the client application (you should not need to
+ *     call <code>refreshToken()</code> manually)
+ * </li>
+ * <li>You use <a href="http://hc.apache.org/httpcomponents-client-ga/">Apache HttpClient</a></li>
  * </ul>
- *
- * @author Jan Berkel <jan@soundcloud.com>
- * @version 1.0
+ * Example usage:
+ * <code>
+ *     <pre>
+ * ApiWrapper wrapper = new ApiWrapper("client_id", "client_secret", null, null, CloudAPI.Env.SANDBOX);
+ * wrapper.login("login", "password");
+ * HttpResponse response = wrapper.get(Request.to("/tracks"));
+ *      </pre>
+ * </code>
  * @see CloudAPI
  */
 public class ApiWrapper implements CloudAPI, Serializable {

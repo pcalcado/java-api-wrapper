@@ -6,5 +6,7 @@
  * information.
  *
  * @see com.soundcloud.api.ApiWrapper
+ * @author Jan Berkel <jan@soundcloud.com>
+ * @version 1.0
  */
 package com.soundcloud.api;
