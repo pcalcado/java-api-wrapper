@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class TestHttpResponse extends HttpResponseStub {
+public class FakeHttpResponse extends HttpResponseStub {
 
     private int statusCode;
     private String responseBody;
@@ -19,12 +19,12 @@ public class TestHttpResponse extends HttpResponseStub {
     private TestStatusLine statusLine = new TestStatusLine();
     private TestHttpEntity httpEntity = new TestHttpEntity();
 
-    public TestHttpResponse(int statusCode, String responseBody) {
+    public FakeHttpResponse(int statusCode, String responseBody) {
         this.statusCode = statusCode;
         this.responseBody = responseBody;
     }
 
-    public TestHttpResponse(int statusCode, String responseBody, Header contentType) {
+    public FakeHttpResponse(int statusCode, String responseBody, Header contentType) {
         this(statusCode, responseBody);
         this.contentType = contentType;
     }

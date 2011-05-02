@@ -22,11 +22,11 @@ public class FakeHttpLayer {
     private HttpResponse defaultResponse;
 
     public void addPendingHttpResponse(int statusCode, String responseBody) {
-        addPendingHttpResponse(new TestHttpResponse(statusCode, responseBody));
+        addPendingHttpResponse(new FakeHttpResponse(statusCode, responseBody));
     }
 
     public void addPendingHttpResponseWithContentType(int statusCode, String responseBody, Header contentType) {
-        addPendingHttpResponse(new TestHttpResponse(statusCode, responseBody, contentType));
+        addPendingHttpResponse(new FakeHttpResponse(statusCode, responseBody, contentType));
     }
 
     public void addPendingHttpResponse(HttpResponse httpResponse) {
@@ -42,7 +42,7 @@ public class FakeHttpLayer {
     }
 
     public void addHttpResponseRule(String uri, String response) {
-        addHttpResponseRule(new UriRequestMatcher(uri), new TestHttpResponse(200, response));
+        addHttpResponseRule(new UriRequestMatcher(uri), new FakeHttpResponse(200, response));
     }
 
     public void addHttpResponseRule(RequestMatcher requestMatcher, HttpResponse response) {
@@ -58,7 +58,7 @@ public class FakeHttpLayer {
     }
 
     public void setDefaultHttpResponse(int statusCode, String responseBody) {
-        setDefaultHttpResponse(new TestHttpResponse(statusCode, responseBody));
+        setDefaultHttpResponse(new FakeHttpResponse(statusCode, responseBody));
     }
 
     private HttpResponse findResponse(HttpRequest httpRequest) throws HttpException, IOException {
