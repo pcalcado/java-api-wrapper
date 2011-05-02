@@ -42,7 +42,7 @@ public class ApiWrapperTest {
     final FakeHttpLayer layer = new FakeHttpLayer();
     @Before
     public void setup() {
-        api = new ApiWrapper("invalid", "invalid", URI.create("redirect://me"), null, CloudAPI.Env.SANDBOX) {
+        api = new ApiWrapper("invalid", "invalid", URI.create("redirect://me"), null, Env.SANDBOX) {
             @Override
             protected RequestDirector getRequestDirector(HttpRequestExecutor requestExec,
                                                          ClientConnectionManager conman,
@@ -315,7 +315,7 @@ public class ApiWrapperTest {
 
     @Test
     public void shouldSerializeAndDeserializeWrapper() throws Exception {
-        ApiWrapper wrapper = new ApiWrapper("client", "secret", null, new Token("1", "2"), CloudAPI.Env.SANDBOX);
+        ApiWrapper wrapper = new ApiWrapper("client", "secret", null, new Token("1", "2"), Env.SANDBOX);
         File ser = File.createTempFile("serialized_wrapper", "ser");
         wrapper.toFile(ser);
         ApiWrapper other = ApiWrapper.fromFile(ser);

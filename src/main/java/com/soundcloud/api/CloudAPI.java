@@ -154,24 +154,6 @@ public interface CloudAPI {
     URI loginViaFacebook();
 
     /**
-     * The environment to operate against.
-     * Use SANDBOX for testing your app, and LIVE for production applications.
-     */
-    enum Env {
-        /** The main production site */
-        @SuppressWarnings({"UnusedDeclaration"})
-        LIVE("api.soundcloud.com"),
-        /** sandbox-soundcloud.com */
-        SANDBOX("api.sandbox-soundcloud.com");
-        public final HttpHost host, sslHost;
-
-        Env(String hostname) {
-            host = new HttpHost(hostname, -1, "http");
-            sslHost = new HttpHost(hostname, -1, "https");
-        }
-    }
-
-    /**
      * Interested in changes to the current token.
      */
     interface TokenStateListener {

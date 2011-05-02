@@ -35,7 +35,7 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
                 CLIENT_SECRET,
                 null,
                 null,
-                CloudAPI.Env.SANDBOX);
+                Env.SANDBOX);
 
         api.login("api-testing", "testing");
     }

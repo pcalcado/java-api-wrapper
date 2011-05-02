@@ -1,7 +1,7 @@
 package com.soundcloud.api.examples;
 
 import com.soundcloud.api.ApiWrapper;
-import com.soundcloud.api.CloudAPI;
+import com.soundcloud.api.Env;
 import com.soundcloud.api.Token;
 
 import java.io.File;
@@ -24,7 +24,7 @@ public final class CreateWrapper {
                     args[1] /* client_secret */,
                     null    /* redirect URI */,
                     null    /* token */,
-                    args.length == 5 ? CloudAPI.Env.valueOf(args[4].toUpperCase()) : CloudAPI.Env.SANDBOX);
+                    args.length == 5 ? Env.valueOf(args[4].toUpperCase()) : Env.SANDBOX);
 
             Token token = wrapper.login(args[2] /* login */, args[3] /* password */);
             System.out.println("got token from server: " + token);

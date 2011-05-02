@@ -64,7 +64,7 @@ import java.util.Set;
  * Example usage:
  * <code>
  *     <pre>
- * ApiWrapper wrapper = new ApiWrapper("client_id", "client_secret", null, null, CloudAPI.Env.SANDBOX);
+ * ApiWrapper wrapper = new ApiWrapper("client_id", "client_secret", null, null, Env.SANDBOX);
  * wrapper.login("login", "password");
  * HttpResponse response = wrapper.get(Request.to("/tracks"));
  *      </pre>
@@ -194,6 +194,8 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     /**
      * Request an OAuth2 token from SoundCloud
+     * @param  request the token request
+     * @return the token
      * @throws java.io.IOException network error
      * @throws com.soundcloud.api.CloudAPI.InvalidTokenException unauthorized
      */
@@ -245,7 +247,6 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     /**
      * User-Agent to identify ourselves with - defaults to USER_AGENT
-     *
      * @return the agent to use
      * @see CloudAPI#USER_AGENT
      */
@@ -253,8 +254,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
         return USER_AGENT;
     }
 
-
-    /** The HttpClient instance used to make the calls */
+    /** @return The HttpClient instance used to make the calls */
     public HttpClient getHttpClient() {
         if (httpClient == null) {
             final HttpParams params = getParams();
@@ -372,6 +372,8 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     /**
      * Execute an API request, adds the necessary headers.
+     * @param req the HTTP request
+     * @return the HTTP response
      * @throws java.io.IOException network error etc.
      */
     public HttpResponse execute(HttpRequest req) throws IOException {
