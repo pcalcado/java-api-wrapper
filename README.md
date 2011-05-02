@@ -40,7 +40,9 @@ First create a wrapper, remember to replace all credentials with real ones.
     wrapper serialised to wrapper.ser
 
 With the wrapper and all tokens serialised to `wrapper.ser` you can run the
-other examples:
+other examples.
+
+Getting a resource:
 
     $ gradle getResource -Presource=/me
     GET /me
@@ -48,6 +50,8 @@ other examples:
         "avatar_url": "http://i1.sndcdn.com/avatars-000000599474-nv71y5-large.jpg?af2741b",
         "city": "Berlin"
     ...
+
+Uploading a file:
 
     $ gradle uploadFile  -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
     Uploading src/test/resources/com/soundcloud/api/hello.aiff
