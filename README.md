@@ -27,7 +27,8 @@ other examples, so you have to run this one first.
   * [UploadFile][] uploads a file to SoundCloud.
 
 You can use gradle tasks to compile and run these examples with one command.
-First create a wrapper, remember to replace all credentials with real ones.
+
+First create a wrapper, remember to replace all credentials with real ones:
 
     $ gradle createWrapper -Pclient_id=my_client_id \
         -Pclient_secret=mys3cr3t \
@@ -42,7 +43,7 @@ First create a wrapper, remember to replace all credentials with real ones.
 With the wrapper and all tokens serialised to `wrapper.ser` you can run the
 other examples.
 
-Getting a resource:
+GET a resource:
 
     $ gradle getResource -Presource=/me
     GET /me
@@ -53,7 +54,7 @@ Getting a resource:
 
 Uploading a file:
 
-    $ gradle uploadFile  -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
+    $ gradle uploadFile -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
     Uploading src/test/resources/com/soundcloud/api/hello.aiff
     .............................................
     201 Created https://api.sandbox-soundcloud.com/tracks/2100052
@@ -61,7 +62,7 @@ Uploading a file:
         "artwork_url": null,
         ...
 
-You can add the debug flag (`-d`) to gradle to enable extra HTTP logging:
+You can add the debug flag (`-d`) to gradle to get some extra HTTP logging:
 
     $ gradle getResource -Presource=/me -d
 

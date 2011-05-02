@@ -85,5 +85,9 @@ task doc(type: Javadoc) {
   classpath = sourceSets.main.compileClasspath
   destinationDir = new File(buildDir, 'javadoc')
   options.noNavBar = true
+  options.links = [
+    "http://hc.apache.org/httpcomponents-core-ga/httpcore/apidocs/",
+    "http://json.org/javadoc/"
+  ]
   //options.stylesheetFile = new File('styles.css')
 }
