@@ -34,19 +34,19 @@ httpDebug = ['org.apache.commons.logging.Log': 'org.apache.commons.logging.impl.
              'org.apache.commons.logging.simplelog.log.org.apache.http': 'DEBUG',
              'org.apache.commons.logging.simplelog.log.org.apache.http.wire': 'ERROR']
 
-def exampleTask(name, mainClass, arguments) {
+def example(name, mainClass, arguments) {
   task(name, dependsOn: ['compileJava', 'compileExamplesJava']) << {
     javaexec {
       main = 'com.soundcloud.api.examples.'+mainClass
       classpath = sourceSets.main.runtimeClasspath + sourceSets.examples.classes
-      systemProperties httpDebug
+      if (logger.debugEnabled) systemProperties httpDebug
       args arguments.call()
     }
   }
 }
-exampleTask('createWrapper', 'CreateWrapper', { [client_id, client_secret, login, password, env] })
-exampleTask('getResource',   'GetResource',   { resource })
-exampleTask('uploadFile',    'UploadFile',    { file })
+example('createWrapper', 'CreateWrapper', { [client_id, client_secret, login, password, env] })
+example('getResource',   'GetResource',   { resource })
+example('uploadFile',    'UploadFile',    { file })
 
 task writePom << {
   pom {

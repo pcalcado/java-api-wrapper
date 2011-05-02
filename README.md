@@ -37,7 +37,22 @@ You can use gradle tasks to compile and run these examples with one command:
     $ gradle getResource -Presource=/me
     $ gradle uploadFile  -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
 
-## Generate project files for various IDEs
+You can add the debug flag (`-d`) to gradle to enable extra HTTP logging:
+
+    $ gradle getResource -Presource=/me -d
+
+    2011/05/02 02:03:44:263 CEST [DEBUG] DefaultClientConnection - Sending request: GET /me HTTP/1.1
+    2011/05/02 02:03:44:265 CEST [DEBUG] headers - >> GET /me HTTP/1.1
+    2011/05/02 02:03:44:265 CEST [DEBUG] headers - >> Authorization: OAuth 0000000ni3Br147FO7Cj5Xotqg5hAyxx
+    ...
+
+## Note on Patches/Pull Requests
+
+  * Fork the project.
+  * Make your feature addition or bug fix.
+  * Add tests for it.
+  * Commit, do not mess with buildfile, version, or history.
+  * Send a pull request. Bonus points for topic branches.
 
 If you want to work on the code in an IDE instead of a text editor you can
 easily create project files with gradle:
@@ -47,14 +62,6 @@ easily create project files with gradle:
 
 Please refrain from committing any IDE configuration files to the repo, as
 these can easily be regenerated.
-
-## Note on Patches/Pull Requests
-
-  * Fork the project.
-  * Make your feature addition or bug fix.
-  * Add tests for it.
-  * Commit, do not mess with buildfile, version, or history.
-  * Send a pull request. Bonus points for topic branches.
 
 ## Credits / License
 
