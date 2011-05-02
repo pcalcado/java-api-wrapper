@@ -84,5 +84,6 @@ task doc(type: Javadoc) {
   title = "SoundCloud Java API Wrapper $version"
   classpath = sourceSets.main.compileClasspath
   destinationDir = new File(buildDir, 'javadoc')
+  options.noNavBar = true
   //options.stylesheetFile = new File('styles.css')
 }
