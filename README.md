@@ -41,8 +41,7 @@ can be used to build and test the project with [Apache Maven][] (`mvn install`).
 The wrapper ships with some examples in `src/examples/java`:
 
   * [CreateWrapper][] creates a wrapper and obtains an access token using
-  login / password combination. The wrapper is then serialised to disk and can be used by the
-  other examples, so you have to run this one first.
+  login / password.
   * [GetResource][] performs a GET request for a resource and prints the
   JSON result.
   * [UploadFile][] uploads a file to SoundCloud.
