@@ -7,10 +7,10 @@ OAuth2 compatible SoundCloud API wrapper written in Java ([javadoc][]).
 A while ago we advised developers to use OAuth2 as the preferred way of API
 authentication ([We ♥ OAuth 2][weheartoauth2]).
 
-However the current Java API Wrapper ([soundcloudapi-java][]) has only partial support
-for OAuth2. Since one of the design goals of OAuth2 is the reduction of
-complexity and amount of code needed to implement it, a wrapper supporting both
-OAuth1 and OAuth2 would turn out to be unneccesarily complex.
+However the current Java API Wrapper ([soundcloudapi-java-announce][]) has only
+partial support for OAuth2. Since one of the design goals of OAuth2 is the
+reduction of complexity and amount of code needed to implement it, a wrapper
+supporting both OAuth1 and OAuth2 would turn out to be unneccesarily complex.
 
 It has done a good service in the current iteration of the official [SoundCloud Android][]
 app but since we needed OAuth2 for the upcoming release we decided to rewrite
@@ -173,6 +173,7 @@ See LICENSE for details.
 [json-java]: http://json.org/java/
 [javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/com/soundcloud/api/package-summary.html
 [soundcloudapi-java]: http://code.google.com/p/soundcloudapi-java/
+[soundcloudapi-java-annouce]: http://blog.soundcloud.com/2010/01/08/java-wrapper/
 [CreateWrapper]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
 [GetResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/GetResource.java
 [UploadFile]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/UploadFile.java
