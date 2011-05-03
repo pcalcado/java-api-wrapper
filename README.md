@@ -2,6 +2,17 @@
 
 OAuth2 compatible SoundCloud API wrapper written in Java ([javadoc][]).
 
+## Why another Java API wrapper?
+
+There already exists a Java wrapper for the SoundCloud API
+([soundcloudapi-java][]), but at the moment it supports OAuth1 with only
+partial support for OAuth2. Since one of the design goals of OAuth2 is the
+reduction of complexity and amount of code needed to implement it, a wrapper
+supporting both OAuth1 and OAuth2 would turn out to be unneccesarily complex.
+
+This wrapper is lightweight and has a minimum of external dependencies
+- it should be easily embedabble in both mobile and desktop applications.
+
 ## Basic usage
 
 Create a wrapper instance:
@@ -16,16 +27,42 @@ Execute a request:
 
     HttpResponse resp = wrapper.get(Request.to("/me"));
 
+Update a resource:
+
+    HttpResponse resp =
+          wrapper.put(Request.to("/me")
+                             .with("user[full_name]", "Che Flute",
+                                   "user[website]",   "http://cheflute.com")
+                             .withFile("user[avatar_data", new File("flute.jpg")));
+
+## Migrating from OAuth1
+
+If your app uses OAuth1 and already has users with access tokens
+you can easily migrate to OAuth2 without requiring anybody to reauthenticate:
+
+    Token token = wrapper.exchangeOAuth1Token("validoauth1accesstoken");
+
+Note that this is specific to SoundCloud and not part of the current OAuth2
+draft.
+
+## Refresh tokens
+
+OAuth2 access tokens are only valid for a certain amount of time (1h) and need
+to be refreshed when they become stale. The wrapper automatically refreshes the
+token and retries the request so an API client usually does not need to
+care about this fact. If the client is interested (possibly to persist the
+updated token) it can register a listener with the wrapper.
+
 ## Requirements
 
 The wrapper depends on [Apache HttpClient][] and [json-java][]. The Android SDK
 already comes with these two libraries so you don't need to include them when
-using the wrapper there (this wrapper is actually an extraction from
-the [SoundCloud Android][] codebase).
+using the wrapper there (it is actually an extraction from the [SoundCloud
+Android][] codebase).
 
 ## Build + Test
 
-The java-api-wrapper uses the groovy-based build system [gradle][]:
+The project uses the groovy-based build system [gradle][]:
 
     $ brew install gradle (OSX+homebrew, check website for other OS)
     $ git clone git://github.com/soundcloud/java-api-wrapper.git
