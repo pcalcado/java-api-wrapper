@@ -4,20 +4,27 @@ OAuth2 compatible SoundCloud API wrapper written in Java ([javadoc][]).
 
 ## Why another Java API wrapper?
 
-There already exists a Java wrapper for the SoundCloud API
-([soundcloudapi-java][]), but at the moment it supports OAuth1 with only
-partial support for OAuth2. Since one of the design goals of OAuth2 is the
-reduction of complexity and amount of code needed to implement it, a wrapper
-supporting both OAuth1 and OAuth2 would turn out to be unneccesarily complex.
+A while ago we advised developers to use OAuth2 as the preferred way of API
+authentication ([We ♥ OAuth 2][weheartoauth2]).
 
-This wrapper is lightweight and has a minimum of external dependencies
+However the current Java API Wrapper ([soundcloudapi-java][]) has only partial support
+for OAuth2. Since one of the design goals of OAuth2 is the reduction of
+complexity and amount of code needed to implement it, a wrapper supporting both
+OAuth1 and OAuth2 would turn out to be unneccesarily complex.
+
+It has done a good service in the current iteration of the official [SoundCloud Android][]
+app but since we needed OAuth2 for the upcoming release we decided to rewrite
+it while keeping the basic functionality the same.
+
+The result is very lightweight and requires a minimum of external dependencies
 - it should be easily embedabble in both mobile and desktop applications.
 
 ## Basic usage
 
 Create a wrapper instance:
 
-    ApiWrapper wrapper = new ApiWrapper("client_id", "client_secret", null, null, Env.SANDBOX);
+    ApiWrapper wrapper = new ApiWrapper("client_id", "client_secret",
+                                        null, null, Env.SANDBOX);
 
 Obtain a token:
 
@@ -31,34 +38,33 @@ Update a resource:
 
     HttpResponse resp =
           wrapper.put(Request.to("/me")
-                             .with("user[full_name]", "Che Flute",
-                                   "user[website]",   "http://cheflute.com")
-                             .withFile("user[avatar_data", new File("flute.jpg")));
+                 .with("user[full_name]", "Che Flute",
+                       "user[website]",   "http://cheflute.com")
+                 .withFile("user[avatar_data", new File("flute.jpg")));
 
 ## Migrating from OAuth1
 
 If your app uses OAuth1 and already has users with access tokens
 you can easily migrate to OAuth2 without requiring anybody to reauthenticate:
 
-    Token token = wrapper.exchangeOAuth1Token("validoauth1accesstoken");
+    Token token = wrapper.exchangeOAuth1Token("validoauth1token");
 
 Note that this is specific to SoundCloud and not part of the current OAuth2
 draft.
 
 ## Refresh tokens
 
-OAuth2 access tokens are only valid for a certain amount of time (1h) and need
-to be refreshed when they become stale. The wrapper automatically refreshes the
-token and retries the request so an API client usually does not need to
-care about this fact. If the client is interested (possibly to persist the
-updated token) it can register a listener with the wrapper.
+OAuth2 access tokens are only valid for a certain amount of time (usually 1h)
+and need to be refreshed when they become stale. The wrapper automatically
+refreshes the token and retries the request so an API client usually does not
+need to care about this fact. If the client is interested (possibly to persist
+the updated token) it can register a listener with the wrapper.
 
 ## Requirements
 
 The wrapper depends on [Apache HttpClient][] and [json-java][]. The Android SDK
 already comes with these two libraries so you don't need to include them when
-using the wrapper there (it is actually an extraction from the [SoundCloud
-Android][] codebase).
+using the wrapper there.
 
 ## Build + Test
 
@@ -67,8 +73,8 @@ The project uses the groovy-based build system [gradle][]:
     $ brew install gradle (OSX+homebrew, check website for other OS)
     $ git clone git://github.com/soundcloud/java-api-wrapper.git
     $ cd java-api-wrapper
-    $ gradle jar      # build jar file (build/libs/java-api-wrapper-1.x.x.jar)
-    $ gradle test     # run tests
+    $ gradle jar  # build jar file (build/libs/java-api-wrapper-1.x.x.jar)
+    $ gradle test # run tests
 
 You don't have to use gradle - the repo also contains a `pom.xml` file which
 can be used to build and test the project with [Apache Maven][] (`mvn install`).
@@ -94,8 +100,11 @@ First create a wrapper, remember to substitute all credentials with real ones
         -Ppassword=testing \
         -Penv=live  # or sandbox
 
-    got token from server: Token{access='0000000KNYbSTHKNZC2tq7Epkgxvgmhu', refresh='0000000jd4YCL0vCuKf6UtPsS6Ahd0wc', scope='null', expires=Mon May
-    02 17:35:15 CEST 2011}
+    got token from server: Token{
+      access='0000000KNYbSTHKNZC2tq7Epkgxvgmhu',
+      refresh='0000000jd4YCL0vCuKf6UtPsS6Ahd0wc', scope='null',
+      expires=Mon May 02 17:35:15 CEST 2011}
+
     wrapper serialised to wrapper.ser
 
 With the wrapper and all tokens serialised to `wrapper.ser` you can run the
@@ -106,13 +115,14 @@ GET a resource:
     $ gradle getResource -Presource=/me
     GET /me
     {
-        "avatar_url": "http://i1.sndcdn.com/avatars-000000599474-nv71y5-large.jpg?af2741b",
+        "username": "testing",
         "city": "Berlin"
     ...
 
-Uploading a file:
+Upload a file:
 
-    $ gradle uploadFile -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
+    $ gradle uploadFile \
+            -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
     Uploading src/test/resources/com/soundcloud/api/hello.aiff
     .............................................
     201 Created https://api.sandbox-soundcloud.com/tracks/2100052
@@ -124,9 +134,9 @@ You can add the debug flag (`-d`) to gradle to get some extra HTTP logging:
 
     $ gradle getResource -Presource=/me -d
 
-    2011/05/02 02:03:44:263 CEST [DEBUG] DefaultClientConnection - Sending request: GET /me HTTP/1.1
-    2011/05/02 02:03:44:265 CEST [DEBUG] headers - >> GET /me HTTP/1.1
-    2011/05/02 02:03:44:265 CEST [DEBUG] headers - >> Authorization: OAuth 0000000ni3Br147FO7Cj5Xotqg5hAyxx
+    [DEBUG] DefaultClientConnection - Sending request: GET /me HTTP/1.1
+    [DEBUG] headers - >> GET /me HTTP/1.1
+    [DEBUG] headers - >> Authorization: OAuth 0000000ni3Br147FO7Cj5XotAy
     ...
 
 Note that while the example code uses standard Java serialization to persist
@@ -169,3 +179,4 @@ See LICENSE for details.
 [SoundCloud Android]: https://market.android.com/details?id=com.soundcloud.android
 [register-app]: http://soundcloud.com/you/apps/new
 [Apache Maven]: http://maven.apache.org/
+[weheartoauth2]: http://backstage.soundcloud.com/2011/01/we-love-oauth-2/
