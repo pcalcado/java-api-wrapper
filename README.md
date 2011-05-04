@@ -55,9 +55,9 @@ using the wrapper there.
 
 ## Build + Test
 
-The project uses the groovy-based build system [gradle][]:
+The project uses the groovy-based build system [gradle][] (version 1.x):
 
-    $ brew install gradle (OSX+homebrew, check website for other OS)
+    $ brew update && brew install gradle (OSX+homebrew, check website for other OS)
     $ git clone git://github.com/soundcloud/java-api-wrapper.git
     $ cd java-api-wrapper
     $ gradle jar  # build jar file (build/libs/java-api-wrapper-1.x.x.jar)
