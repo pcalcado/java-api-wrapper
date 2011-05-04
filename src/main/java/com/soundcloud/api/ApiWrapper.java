@@ -179,17 +179,19 @@ public class ApiWrapper implements CloudAPI, Serializable {
                         "client_id", mClientId,
                         "response_type", "code"
                 ),
+                false,
                 true);
     }
 
     /**
      * Constructs URI path for a given resource.
-     * @param request   the resource to access
-     * @param ssl       whether to use SSL or not
+     * @param request      the resource to access
+     * @param api          api or web
+     * @param secure       whether to use SSL or not
      * @return a valid URI
      */
-    public URI getURI(Request request, boolean ssl) {
-        return URI.create((ssl ? env.sslHost : env.host).toURI()).resolve(request.toUrl());
+    public URI getURI(Request request, boolean api, boolean secure) {
+        return URI.create((api ? env.getApiHost(secure) : env.getWebHost(secure)).toURI()).resolve(request.toUrl());
     }
 
     /**
@@ -200,7 +202,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
      * @throws com.soundcloud.api.CloudAPI.InvalidTokenException unauthorized
      */
     protected Token requestToken(Request request) throws IOException {
-        HttpResponse response = getHttpClient().execute(env.sslHost, request.buildRequest(HttpPost.class));
+        HttpResponse response = getHttpClient().execute(env.apiSslHost, request.buildRequest(HttpPost.class));
         final int status = response.getStatusLine().getStatusCode();
 
         if (status == HttpStatus.SC_OK) {
@@ -377,7 +379,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
      * @throws java.io.IOException network error etc.
      */
     public HttpResponse execute(HttpRequest req) throws IOException {
-        return getHttpClient().execute(env.sslHost, addHeaders(req));
+        return getHttpClient().execute(env.apiSslHost, addHeaders(req));
     }
 
     /**

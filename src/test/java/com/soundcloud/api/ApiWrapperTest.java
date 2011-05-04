@@ -259,7 +259,7 @@ public class ApiWrapperTest {
     @Test
     public void shouldGenerateUrlWithoutParameters() throws Exception {
         assertThat(
-                api.getURI(new Request("/my-resource"), true).toString(),
+                api.getURI(new Request("/my-resource"), true, true).toString(),
                 equalTo("https://api.sandbox-soundcloud.com/my-resource")
         );
     }
@@ -267,7 +267,7 @@ public class ApiWrapperTest {
     @Test
     public void shouldGenerateUrlWithoutSSL() throws Exception {
         assertThat(
-                api.getURI(new Request("/my-resource"), false).toString(),
+                api.getURI(new Request("/my-resource"), true, false).toString(),
                 equalTo("http://api.sandbox-soundcloud.com/my-resource")
         );
     }
@@ -275,8 +275,16 @@ public class ApiWrapperTest {
     @Test
     public void shouldGenerateUrlWithParameters() throws Exception {
         assertThat(
-                api.getURI(Request.to("/my-resource").with("foo", "bar"), true).toString(),
+                api.getURI(Request.to("/my-resource").with("foo", "bar"), true, true).toString(),
                 equalTo("https://api.sandbox-soundcloud.com/my-resource?foo=bar")
+        );
+    }
+
+    @Test
+    public void shouldGenerateUrlForWebHost() throws Exception {
+        assertThat(
+                api.getURI(Request.to("/my-resource"), false, true).toString(),
+                equalTo("https://sandbox-soundcloud.com/my-resource")
         );
     }
 
@@ -284,7 +292,7 @@ public class ApiWrapperTest {
     public void shouldGenerateURIForLoginViaFacebook() throws Exception {
         assertThat(
                 api.loginViaFacebook().toString(),
-                        equalTo("https://api.sandbox-soundcloud.com/connect/via/facebook?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
+                        equalTo("https://sandbox-soundcloud.com/connect/via/facebook?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
                 );
     }
 
