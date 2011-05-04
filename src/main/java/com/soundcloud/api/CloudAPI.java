@@ -139,8 +139,8 @@ public interface CloudAPI {
     void addTokenStateListener(TokenStateListener listener);
 
     /**
-     * Request login/signup via Facebook.
-     * After the Facebook login, control will go to the redirect URI (wrapper specific), with
+     * Request login via authorization code
+     * After login, control will go to the redirect URI (wrapper specific), with
      * one of the following query parameters appended:
      * <ul>
      * <li><code>code</code> in case of success, this will contain the code used for the
@@ -148,10 +148,11 @@ public interface CloudAPI {
      * <li><code>error</code> in case of failure, this contains an error code (most likely
      * <code>access_denied</code>).
      * </ul>
+     * @param  options auth endpoint to use (leave out for default)
      * @return the URI to open in a browser/WebView etc.
      * @see CloudAPI#authorizationCode(String)
      */
-    URI loginViaFacebook();
+    URI authorizationCodeUrl(String... options);
 
     /**
      * Interested in changes to the current token.

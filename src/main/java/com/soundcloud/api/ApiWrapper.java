@@ -172,9 +172,9 @@ public class ApiWrapper implements CloudAPI, Serializable {
         }
     }
 
-    @Override public URI loginViaFacebook() {
+    @Override public URI authorizationCodeUrl(String... options) {
         return getURI(
-                Request.to(Endpoints.FACEBOOK_LOGIN).with(
+                Request.to(options.length == 0 ? Endpoints.CONNECT : options[0]).with(
                         "redirect_uri", mRedirectUri,
                         "client_id", mClientId,
                         "response_type", "code"

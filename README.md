@@ -1,30 +1,17 @@
 # java-api-wrapper
 
-OAuth2 compatible SoundCloud API wrapper written in Java ([javadoc][]).
+OAuth2 SoundCloud API wrapper written in Java ([javadoc][]), extracted from the
+[SoundCloud Android][] codebase.
 
-## Why another Java API wrapper?
-
-A while ago we advised developers to use OAuth2 as the preferred way of API
-authentication ([We ♥ OAuth 2][weheartoauth2]).
-
-However the current Java API Wrapper ([soundcloudapi-java-announce][]) has only
-partial support for OAuth2. Since one of the design goals of OAuth2 is the
-reduction of complexity and amount of code needed to implement it, a wrapper
-supporting both OAuth1 and OAuth2 would turn out to be unneccesarily complex.
-
-It has done a good service in the current iteration of the official [SoundCloud Android][]
-app but since we needed OAuth2 for the upcoming release we decided to rewrite
-it while keeping the basic functionality the same.
-
-The result is very lightweight and requires a minimum of external dependencies
-- it should be easily embedabble in both mobile and desktop applications.
+It's lightweight and requires a minimum of external dependencies
+- should be easily embeddable in both desktop and mobile applications.
 
 ## Basic usage
 
 Create a wrapper instance:
 
     ApiWrapper wrapper = new ApiWrapper("client_id", "client_secret",
-                                        null, null, Env.SANDBOX);
+                                        null, null, Env.LIVE);
 
 Obtain a token:
 
@@ -40,7 +27,7 @@ Update a resource:
           wrapper.put(Request.to("/me")
                  .with("user[full_name]", "Che Flute",
                        "user[website]",   "http://cheflute.com")
-                 .withFile("user[avatar_data", new File("flute.jpg")));
+                 .withFile("user[avatar_data]", new File("flute.jpg")));
 
 ## Migrating from OAuth1
 
@@ -97,8 +84,8 @@ First create a wrapper, remember to substitute all credentials with real ones
     $ gradle createWrapper -Pclient_id=my_client_id \
         -Pclient_secret=mys3cr3t \
         -Plogin=api-testing \
-        -Ppassword=testing \
-        -Penv=live  # or sandbox
+        -Ppassword=testing
+
 
     got token from server: Token{
       access='0000000KNYbSTHKNZC2tq7Epkgxvgmhu',
@@ -180,4 +167,3 @@ See LICENSE for details.
 [SoundCloud Android]: https://market.android.com/details?id=com.soundcloud.android
 [register-app]: http://soundcloud.com/you/apps/new
 [Apache Maven]: http://maven.apache.org/
-[weheartoauth2]: http://backstage.soundcloud.com/2011/01/we-love-oauth-2/

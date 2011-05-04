@@ -288,13 +288,24 @@ public class ApiWrapperTest {
         );
     }
 
+
     @Test
-    public void shouldGenerateURIForLoginViaFacebook() throws Exception {
+    public void shouldGenerateURIForLoginAuthCode() throws Exception {
         assertThat(
-                api.loginViaFacebook().toString(),
-                        equalTo("https://sandbox-soundcloud.com/connect/via/facebook?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
+                api.authorizationCodeUrl().toString(),
+                    equalTo("https://sandbox-soundcloud.com/connect?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
                 );
     }
+
+
+    @Test
+    public void shouldGenerateURIForLoginAuthCodeWithDifferentEndPoint() throws Exception {
+        assertThat(
+                api.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT).toString(),
+                    equalTo("https://sandbox-soundcloud.com/connect/via/facebook?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
+                );
+    }
+
 
     @Test
     public void shouldCallTokenStateListenerWhenTokenIsInvalidated() throws Exception {

@@ -38,5 +38,6 @@ public interface Endpoints {
     String RESOLVE             = "/resolve";
 
     String SEND_PASSWORD       = "/passwords/reset-instructions";
-    String FACEBOOK_LOGIN      = "/connect/via/facebook";
+    String CONNECT             = "/connect";
+    String FACEBOOK_CONNECT    = "/connect/via/facebook";
 }
