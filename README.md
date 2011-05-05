@@ -49,9 +49,9 @@ the updated token) it can register a listener with the wrapper.
 
 ## Requirements
 
-The wrapper depends on [Apache HttpClient][] and [json-java][]. The Android SDK
-already comes with these two libraries so you don't need to include them when
-using the wrapper there.
+The wrapper depends on [Apache HttpClient][] (including the [HttpMime][]
+module) and [json-java][]. The Android SDK already comes with these two
+libraries so you don't need to include them when using the wrapper there.
 
 ## Build + Test
 
@@ -157,6 +157,7 @@ See LICENSE for details.
 [gradle]: http://www.gradle.org/
 [urbanstew]: http://urbanstew.org/
 [Apache HttpClient]: http://hc.apache.org/httpcomponents-client-ga/
+[HttpMime][]: http://hc.apache.org/httpcomponents-client-ga/httpmime
 [json-java]: http://json.org/java/
 [javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/com/soundcloud/api/package-summary.html
 [soundcloudapi-java]: http://code.google.com/p/soundcloudapi-java/
