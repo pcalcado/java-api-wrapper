@@ -157,7 +157,7 @@ See LICENSE for details.
 [gradle]: http://www.gradle.org/
 [urbanstew]: http://urbanstew.org/
 [Apache HttpClient]: http://hc.apache.org/httpcomponents-client-ga/
-[HttpMime][]: http://hc.apache.org/httpcomponents-client-ga/httpmime
+[HttpMime]: http://hc.apache.org/httpcomponents-client-ga/httpmime
 [json-java]: http://json.org/java/
 [javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/com/soundcloud/api/package-summary.html
 [soundcloudapi-java]: http://code.google.com/p/soundcloudapi-java/
