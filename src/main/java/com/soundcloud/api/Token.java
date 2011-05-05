@@ -46,7 +46,7 @@ public class Token implements Serializable {
             scope = json.getString(SCOPE);
             expiresIn = System.currentTimeMillis() + json.getLong(EXPIRES_IN) * 1000;
         } catch (JSONException e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage(), e);
         }
     }
 
