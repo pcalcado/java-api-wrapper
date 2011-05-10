@@ -52,6 +52,8 @@ task writePom << {
   pom {
     project {
       groupId 'com.soundcloud'
+      description 'SoundCloud Java API wrapper (OAuth2 only), works on Android'
+      url 'https://github.com/soundcloud/java-api-wrapper#readme'
       inceptionYear '2011'
       licenses {
         license {
@@ -61,7 +63,22 @@ task writePom << {
         }
       }
     }
-    withXml { xml -> xml.asNode().append(new XmlParser().parseText("""
+    withXml { xml ->
+      new XmlParser().parseText("""
+       <project>
+        <scm>
+          <url>https://github.com/soundcloud/java-api-wrapper</url>
+          <connection>git://github.com/soundcloud/java-api-wrapper.git</connection>
+        </scm>
+
+        <developers>
+         <developer>
+           <id>jberkel</id>
+           <name>Jan Berkel</name>
+           <email>jan@soundcloud.com</email>
+         </developer>
+        </developers>
+
         <build>
           <plugins>
             <plugin>
@@ -74,7 +91,8 @@ task writePom << {
             </plugin>
           </plugins>
         </build>
-        """))
+       </project>
+        """).children().each { kid -> xml.asNode().append(kid) }
     }
   }.writeTo("pom.xml")
 }
