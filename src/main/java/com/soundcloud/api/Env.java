@@ -13,25 +13,24 @@ public enum Env {
     /** For testing, http://sandbox-soundcloud.com */
     SANDBOX("api.sandbox-soundcloud.com", "sandbox-soundcloud.com");
 
-    public final HttpHost apiHost, apiSslHost, webHost, webSslHost;
+    public final HttpHost resourceHost, sslResourceHost, authResourceHost, sslAuthResourceHost;
 
     /**
-     * @param apiHostName           the api host
-     * @param resourceHostName      the resource (=web host)
+     * @param resourceHost          the resource host
+     * @param authResourceHost      the authentication resource host
      */
-    Env(String apiHostName, String resourceHostName) {
-        apiHost = new HttpHost(apiHostName, -1, "http");
-        apiSslHost = new HttpHost(apiHostName, -1, "https");
-
-        webHost = new HttpHost(resourceHostName, -1, "http");
-        webSslHost = new HttpHost(resourceHostName, -1, "https");
+    Env(String resourceHost, String authResourceHost) {
+        this.resourceHost = new HttpHost(resourceHost, -1, "http");
+        sslResourceHost = new HttpHost(resourceHost, -1, "https");
+        this.authResourceHost = new HttpHost(authResourceHost, -1, "http");
+        sslAuthResourceHost = new HttpHost(authResourceHost, -1, "https");
     }
 
-    public HttpHost getApiHost(boolean secure) {
-        return secure ? apiSslHost : apiHost;
+    public HttpHost getResourceHost(boolean secure) {
+        return secure ? sslResourceHost : resourceHost;
     }
 
-    public HttpHost getWebHost(boolean secure) {
-        return secure ? webSslHost : webHost;
+    public HttpHost getAuthResourceHost(boolean secure) {
+        return secure ? sslAuthResourceHost : authResourceHost;
     }
 }

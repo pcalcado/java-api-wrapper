@@ -191,7 +191,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
      * @return a valid URI
      */
     public URI getURI(Request request, boolean api, boolean secure) {
-        return URI.create((api ? env.getApiHost(secure) : env.getWebHost(secure)).toURI()).resolve(request.toUrl());
+        return URI.create((api ? env.getResourceHost(secure) : env.getAuthResourceHost(secure)).toURI()).resolve(request.toUrl());
     }
 
     /**
@@ -202,7 +202,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
      * @throws com.soundcloud.api.CloudAPI.InvalidTokenException unauthorized
      */
     protected Token requestToken(Request request) throws IOException {
-        HttpResponse response = getHttpClient().execute(env.apiSslHost, request.buildRequest(HttpPost.class));
+        HttpResponse response = getHttpClient().execute(env.sslResourceHost, request.buildRequest(HttpPost.class));
         final int status = response.getStatusLine().getStatusCode();
 
         if (status == HttpStatus.SC_OK) {
@@ -379,7 +379,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
      * @throws java.io.IOException network error etc.
      */
     public HttpResponse execute(HttpRequest req) throws IOException {
-        return getHttpClient().execute(env.apiSslHost, addHeaders(req));
+        return getHttpClient().execute(env.sslResourceHost, addHeaders(req));
     }
 
     /**
