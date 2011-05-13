@@ -68,10 +68,7 @@ uploadArchives {
                 <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-compiler-plugin</artifactId>
-                  <configuration>
-                    <source>$sourceCompatibility</source>
-                    <target>$sourceCompatibility</target>
-                  </configuration>
+                  <version>2.3</version>
                 </plugin>
               </plugins>
             </build>

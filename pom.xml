@@ -59,8 +59,9 @@
     </dependency>
   </dependencies>
   <scm>
+    <connection>scm:git:git://github.com/soundcloud/java-api-wrapper.git</connection>
+    <developerConnection>scm:git:git@github.com:soundcoud/java-api-wrapper.git</developerConnection>
     <url>https://github.com/soundcloud/java-api-wrapper</url>
-    <connection>git://github.com/soundcloud/java-api-wrapper.git</connection>
   </scm>
   <developers>
     <developer>
@@ -74,10 +75,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
+        <version>2.3</version>
       </plugin>
     </plugins>
   </build>
