@@ -5,9 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import org.apache.http.Header;
 import org.apache.http.auth.AUTH;
@@ -36,6 +34,15 @@ public class OAuth2SchemeTest {
         scheme.authenticate(null, null);
         verify(api).invalidateToken();
         verify(api).refreshToken();
+    }
+
+    @Test
+    public void shouldNotRefreshTokenWhenInvalidateTokenReturnsAToken() throws Exception {
+        when(api.getToken()).thenReturn(null);
+        when(api.invalidateToken()).thenReturn(new Token("1", "2"));
+        scheme.authenticate(null, null);
+        verify(api).invalidateToken();
+        verify(api, never()).refreshToken();
     }
 
     @Test

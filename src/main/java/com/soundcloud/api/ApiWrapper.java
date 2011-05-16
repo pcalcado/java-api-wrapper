@@ -48,8 +48,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Interface with SoundCloud, using OAuth2.
@@ -81,7 +79,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
     private final String mClientId, mClientSecret;
     private final URI mRedirectUri;
     transient private HttpClient httpClient;
-    transient private Set<TokenStateListener> listeners;
+    transient private TokenListener listener;
 
     /**
      * Constructs a new ApiWrapper instance.
@@ -163,12 +161,18 @@ public class ApiWrapper implements CloudAPI, Serializable {
         return mToken;
     }
 
-    @Override public void invalidateToken() {
+    @Override public Token invalidateToken() {
         if (mToken != null) {
+            Token alternative = listener == null ? null : listener.onTokenInvalid(mToken);
             mToken.invalidate();
-            if (listeners != null) {
-                for (TokenStateListener l : listeners) l.onTokenInvalid(mToken);
+            if (alternative != null) {
+                mToken = alternative;
+                return mToken;
+            } else {
+                return null;
             }
+        } else {
+            return null;
         }
     }
 
@@ -207,12 +211,10 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
         if (status == HttpStatus.SC_OK) {
             final Token token = new Token(Http.getJSON(response));
-            if (listeners != null) {
-                for (TokenStateListener l : listeners) l.onTokenRefreshed(token);
-            }
+            if (listener != null) listener.onTokenRefreshed(token);
             return token;
         } else {
-            String error = null;
+            String error = "";
             try {
                 error = Http.getJSON(response).getString("error");
             } catch (IOException ignored) {
@@ -330,7 +332,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
             Header location = resp.getFirstHeader("Location");
             if (location != null) {
                 String s = location.getValue();
-                if (s.indexOf("/") != -1) {
+                if (s.contains("/")) {
                     try {
                         return Integer.parseInt(s.substring(s.lastIndexOf("/") + 1, s.length()));
                     } catch (NumberFormatException ignored) {
@@ -367,9 +369,8 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override
-    public synchronized void addTokenStateListener(TokenStateListener listener) {
-        if (listeners == null) listeners = new HashSet<TokenStateListener>();
-        listeners.add(listener);
+    public synchronized void setTokenListener(TokenListener listener) {
+        this.listener = listener;
     }
 
     /**

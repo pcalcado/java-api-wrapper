@@ -1,6 +1,5 @@
 package com.soundcloud.api;
 
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 
 import java.io.IOException;
@@ -66,7 +65,8 @@ public interface CloudAPI {
     Token clientCredentials() throws IOException;
 
     /**
-     * Tries to refresh the currently used access token with the refresh token
+     * Tries to refresh the currently used access token with the refresh token.
+     * If successful the API wrapper will have the new token set already.
      * @return a valid token
      * @throws IOException in case of network problems
      * @throws com.soundcloud.api.CloudAPI.InvalidTokenException invalid token
@@ -85,8 +85,13 @@ public interface CloudAPI {
      */
     Token exchangeOAuth1Token(String oauth1AccessToken) throws IOException;
 
-    /** Called to invalidate the current access token */
-    void invalidateToken();
+    /**
+     * This method should be called when the token was found to be invalid.
+     * Also replaces the current token, if there is one available.
+     * @return an alternative token, or null if none available
+     *         (which indicates that a refresh could be tried)
+     */
+    Token invalidateToken();
 
     /**
      * @param request resource to GET
@@ -136,7 +141,7 @@ public interface CloudAPI {
      * to be invalid, and when the token had to be refreshed.
      * @param listener token listener
      */
-    void addTokenStateListener(TokenStateListener listener);
+    void setTokenListener(TokenListener listener);
 
     /**
      * Request login via authorization code
@@ -157,12 +162,13 @@ public interface CloudAPI {
     /**
      * Interested in changes to the current token.
      */
-    interface TokenStateListener {
+    interface TokenListener {
         /**
          * Called when token was found to be invalid
          * @param token the invalid token
+         * @return a cached token if available, or null
          */
-        void onTokenInvalid(Token token);
+        Token onTokenInvalid(Token token);
 
         /**
          * Called when the token got successfully refreshed

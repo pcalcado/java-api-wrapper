@@ -69,7 +69,8 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
         assertThat(resp.getStatusLine().getStatusCode(), is(200));
 
         final Token oldToken = api.getToken();
-        api.invalidateToken();
+
+        assertThat(api.invalidateToken(), is(nullValue()));
 
         resp = api.get(Request.to(Endpoints.MY_DETAILS));
         assertThat(resp.getStatusLine().getStatusCode(), is(200));

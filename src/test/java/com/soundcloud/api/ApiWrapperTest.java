@@ -150,7 +150,7 @@ public class ApiWrapperTest {
 
 
     @Test(expected = IOException.class)
-    public void shouldThrowIOExceptonWhenInvalidJSONReturned() throws Exception {
+    public void shouldThrowIOExceptionWhenInvalidJSONReturned() throws Exception {
         layer.addPendingHttpResponse(200, "I'm invalid JSON!");
         api.login("foo", "bar");
     }
@@ -309,10 +309,25 @@ public class ApiWrapperTest {
 
     @Test
     public void shouldCallTokenStateListenerWhenTokenIsInvalidated() throws Exception {
-        CloudAPI.TokenStateListener listener = mock(CloudAPI.TokenStateListener.class);
-        api.addTokenStateListener(listener);
+        CloudAPI.TokenListener listener = mock(CloudAPI.TokenListener.class);
+        api.setTokenListener(listener);
+        final Token old = api.getToken();
         api.invalidateToken();
-        verify(listener).onTokenInvalid(api.getToken());
+        verify(listener).onTokenInvalid(old);
+    }
+
+    @Test
+    public void invalidateTokenShouldTryToGetAlternativeToken() throws Exception {
+        CloudAPI.TokenListener listener = mock(CloudAPI.TokenListener.class);
+        final Token cachedToken = new Token("new", "fresh");
+        api.setTokenListener(listener);
+        when(listener.onTokenInvalid(api.getToken())).thenReturn(cachedToken);
+        assertThat(api.invalidateToken(), equalTo(cachedToken));
+    }
+
+    @Test
+    public void invalidateTokenShouldReturnNullIfNoListenerAvailable() throws Exception {
+        assertThat(api.invalidateToken(), is(nullValue()));
     }
 
     @Test
@@ -324,10 +339,10 @@ public class ApiWrapperTest {
                 "  \"refresh_token\": \"refresh\"\n" +
                 "}");
 
-        CloudAPI.TokenStateListener listener = mock(CloudAPI.TokenStateListener.class);
+        CloudAPI.TokenListener listener = mock(CloudAPI.TokenListener.class);
 
         api.setToken(new Token("access", "refresh"));
-        api.addTokenStateListener(listener);
+        api.setTokenListener(listener);
         api.refreshToken();
         verify(listener).onTokenRefreshed(api.getToken());
     }
@@ -342,9 +357,11 @@ public class ApiWrapperTest {
         assertThat(wrapper.env, equalTo(other.env));
 
         // make sure we can still use listeners after deserializing
-        CloudAPI.TokenStateListener listener = mock(CloudAPI.TokenStateListener.class);
-        other.addTokenStateListener(listener);
+        CloudAPI.TokenListener listener = mock(CloudAPI.TokenListener.class);
+        other.setTokenListener(listener);
+
+        final Token old = other.getToken();
         other.invalidateToken();
-        verify(listener).onTokenInvalid(other.getToken());
+        verify(listener).onTokenInvalid(old);
     }
 }
