@@ -92,13 +92,10 @@ public class Token implements Serializable {
         if (this == o) return true;
         if (o == null) return false;
 
-        if (o instanceof String) {
-            return o.equals(access);
-        } else if (o instanceof Token) {
+        if (o instanceof Token) {
             Token token = (Token) o;
             if (access != null ? !access.equals(token.access) : token.access != null) return false;
             if (refresh != null ? !refresh.equals(token.refresh) : token.refresh != null) return false;
-            //noinspection RedundantIfStatement
             if (scope != null ? !scope.equals(token.scope) : token.scope != null) return false;
             return true;
         } else {

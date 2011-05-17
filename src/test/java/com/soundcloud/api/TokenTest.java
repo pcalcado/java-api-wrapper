@@ -1,9 +1,7 @@
 package com.soundcloud.api;
 
-import static junit.framework.Assert.*;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.json.JSONObject;
 import org.junit.Test;
@@ -50,6 +48,11 @@ public class TokenTest {
     public void shouldHaveProperEqualsMethod() throws Exception {
         Token t1 = new Token("1", "2");
         Token t2 = new Token("1", "2");
+        assertEquals(t1, t2);
+
+        t1.scope = "foo";
+        assertFalse(t1.equals(t2));
+        t2.scope = "foo";
         assertEquals(t1, t2);
     }
 
