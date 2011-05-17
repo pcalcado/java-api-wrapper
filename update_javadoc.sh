@@ -7,7 +7,7 @@
 DOCS=docs
 
 rm -rf $DOCS && \
-git clone git@github.com:soundcloud/java-api-wrapper.git $DOCS -b gh-pages && \
+git clone . $DOCS -b gh-pages && \
 gradle javadoc && \
 rsync -f 'exclude .git' -rv --delete build/docs/ $DOCS
 cd $DOCS &&
