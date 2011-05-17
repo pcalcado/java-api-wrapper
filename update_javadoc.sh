@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 ## updates the javadocs hosted at
 ## http://soundcloud.github.com/java-api-wrapper/javadoc/com/soundcloud/api/package-summary.html
@@ -15,7 +15,7 @@ git clone . $DOCS -b gh-pages
 gradle javadoc
 rsync -f 'exclude .git' -r --delete build/docs/ $DOCS
 cd $DOCS
-git commit -m 'javadoc update' -a
+git commit -m 'javadoc update' -a --allow-empty
 git add .
-git commit --amend -a -m 'javadoc update'
+git commit --amend -a -m 'javadoc update' --allow-empty
 git push origin gh-pages
