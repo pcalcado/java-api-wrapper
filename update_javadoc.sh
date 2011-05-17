@@ -8,13 +8,14 @@ DOCS=docs
 
 set -e
 
+trap "rm -rf $PWD/$DOCS" EXIT
+
 rm -rf $DOCS
 git clone . $DOCS -b gh-pages
 gradle javadoc
-rsync -f 'exclude .git' -rv --delete build/docs/ $DOCS
+rsync -f 'exclude .git' -r --delete build/docs/ $DOCS
 cd $DOCS
 git commit -m 'javadoc update' -a
 git add .
 git commit --amend -a -m 'javadoc update'
 git push origin gh-pages
-rm -rf $DOCS
