@@ -21,6 +21,7 @@ import java.io.InputStream;
  */
 public class Http {
     public static final int BUFFER_SIZE = 8192;
+    /** Connection timeout */
     public static final int TIMEOUT = 20 * 1000;
 
     private Http() {
