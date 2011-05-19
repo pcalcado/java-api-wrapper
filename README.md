@@ -4,7 +4,7 @@ OAuth2 SoundCloud API wrapper written in Java ([javadoc][]), extracted from the
 [SoundCloud Android][] codebase.
 
 It's lightweight and requires a minimum of external dependencies
-- should be easily embeddable in both desktop and mobile applications.
+so should be easily embeddable in both desktop and mobile applications.
 
 ## Basic usage
 
@@ -77,15 +77,24 @@ The wrapper ships with some examples in `src/examples/java`:
   * [UploadFile][] uploads a file to SoundCloud.
 
 You can use gradle tasks to compile and run these examples with one command.
+If you don't want to use gradle there is also a precompiled jar with all
+dependencies available for download ([jar-all][]).
 
 First create a wrapper, remember to substitute all credentials with real ones
 ([register an app][register-app] if you need client_id/secret):
 
+    # with gradle
     $ gradle createWrapper -Pclient_id=my_client_id \
         -Pclient_secret=mys3cr3t \
         -Plogin=api-testing \
         -Ppassword=testing
 
+    # with plain java
+    $ java -classpath java-api-wrapper-1.0.0-all.jar \
+        com.soundcloud.api.examples.CreateWrapper \
+        my_client_id mys3cr3t api-testing testing
+
+Output:
 
     got token from server: Token{
       access='0000000KNYbSTHKNZC2tq7Epkgxvgmhu',
@@ -100,6 +109,11 @@ other examples.
 GET a resource:
 
     $ gradle getResource -Presource=/me
+    (java -classpath java-api-wrapper-1.0.0-all.jar \
+        com.soundcloud.api.examples.GetResource /me)
+
+Output:
+
     GET /me
     {
         "username": "testing",
@@ -110,6 +124,11 @@ Upload a file:
 
     $ gradle uploadFile \
             -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
+      (java -classpath java-api-wrapper-1.0.0-all.jar \
+        com.soundcloud.api.examples.UploadFile ...)
+
+Output:
+
     Uploading src/test/resources/com/soundcloud/api/hello.aiff
     .............................................
     201 Created https://api.sandbox-soundcloud.com/tracks/2100052
@@ -168,3 +187,5 @@ See LICENSE for details.
 [SoundCloud Android]: https://market.android.com/details?id=com.soundcloud.android
 [register-app]: http://soundcloud.com/you/apps/new
 [Apache Maven]: http://maven.apache.org/
+[jar]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.0.jar
+[jar-all]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.0-all.jar
