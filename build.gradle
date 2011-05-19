@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 
 sourceCompatibility = 1.6
-version = '1.0.0-SNAPSHOT'
+version = '1.0.0'
 group   = 'com.soundcloud'
 
 configurations { deployerJars }
@@ -32,6 +32,10 @@ uploadArchives {
      snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots',
                         id:  'sonatype-nexus-snapshots') {
         authentication(getAuth('sonatype-nexus-snapshots'))
+     }
+     repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/',
+                id:  'sonatype-nexus-staging') {
+        authentication(getAuth('sonatype-nexus-staging'))
      }
      pom {
        project {
@@ -108,8 +112,8 @@ task doc(type: Javadoc) {
   source = sourceSets.main.allJava
   title = "SoundCloud Java API Wrapper $version"
   classpath = sourceSets.main.compileClasspath
-  destinationDir = new File(buildDir, 'javadoc')
-  //options.noNavBar = true
+  destinationDir = new File(new File(buildDir, 'javadoc'), version)
+  options.version = true
   options.links = [
     "http://hc.apache.org/httpcomponents-core-ga/httpcore/apidocs/",
     "http://json.org/javadoc/"

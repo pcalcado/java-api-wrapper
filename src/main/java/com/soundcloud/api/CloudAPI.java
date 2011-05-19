@@ -22,8 +22,8 @@ public interface CloudAPI {
     // other constants
     String REALM              = "SoundCloud";
     String OAUTH_SCHEME       = "oauth";
-    String VERSION            = "1.0";
-    String USER_AGENT         = "SoundCloud Java Wrapper "+ VERSION;
+    String VERSION            = "1.0.0";
+    String USER_AGENT         = "SoundCloud Java Wrapper ("+VERSION+")";
 
     /**
      * Request a token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.2">
