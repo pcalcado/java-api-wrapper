@@ -94,6 +94,15 @@ task doc(type: Javadoc) {
   //options.stylesheetFile = new File('styles.css')
 }
 
+task jarAll(type: Jar) {
+  description = "Build a jar file with all dependencies"
+  dependsOn configurations.runtime, sourceSets.main.classes, sourceSets.examples.classes
+  archiveName = project.name + "-" + version +"-all.jar"
+  from { (configurations.runtime + sourceSets.main.classes + sourceSets.examples.classes ).collect {
+    it.isDirectory() ? it : zipTree(it) }
+  }
+}
+
 def getAuth(repo_id) {
   m2_settings = new File("${System.getProperty('user.home')}/.m2/settings.xml")
   if (m2_settings.exists()) {
