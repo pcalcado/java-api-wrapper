@@ -5,17 +5,19 @@
 ## by regenerating them via gradle and pushing them back to gh-pages
 
 DOCS=docs
+JAVADOCS=build/javadoc
 
 set -e
 
 trap "rm -rf $PWD/$DOCS" EXIT
 
-rm -rf $DOCS
+rm -rf $DOCS $JAVADOCS
 git clone git@github.com:soundcloud/java-api-wrapper.git $DOCS -b gh-pages
-gradle javadoc
-rsync -f 'exclude .git' -r --delete build/docs/ $DOCS
+gradle doc
+VERSION=$(basename $JAVADOCS/*)
+rsync -f 'exclude .git' -r --delete $JAVADOCS/$VERSION $DOCS/javadoc
 cd $DOCS
-git commit -m 'javadoc update' -a --allow-empty
+git commit -m "javadocs for $VERSION" -a --allow-empty
 git add .
-git commit --amend -a -m 'javadoc update' --allow-empty
+git commit --amend -a -m "javadocs for $VERSION" --allow-empty
 git diff origin/gh-pages --summary --exit-code || git push origin gh-pages

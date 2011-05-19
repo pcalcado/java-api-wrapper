@@ -159,7 +159,7 @@ See LICENSE for details.
 [Apache HttpClient]: http://hc.apache.org/httpcomponents-client-ga/
 [HttpMime]: http://hc.apache.org/httpcomponents-client-ga/httpmime
 [json-java]: http://json.org/java/
-[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/com/soundcloud/api/package-summary.html
+[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/1.0.0/com/soundcloud/api/package-summary.html
 [soundcloudapi-java]: http://code.google.com/p/soundcloudapi-java/
 [soundcloudapi-java-annouce]: http://blog.soundcloud.com/2010/01/08/java-wrapper/
 [CreateWrapper]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
