@@ -3,7 +3,7 @@
 OAuth2 SoundCloud API wrapper written in Java ([javadoc][]), extracted from the
 [SoundCloud Android][] codebase.
 
-It's lightweight and requires a minimum of external dependencies
+It is lightweight and requires a minimum of external dependencies
 so should be easily embeddable in both desktop and mobile applications.
 
 ## Basic usage
@@ -66,6 +66,9 @@ The project uses the groovy-based build system [gradle][] (version 1.x):
 You don't have to use gradle - the repo also contains a `pom.xml` file which
 can be used to build and test the project with [Apache Maven][] (`mvn install`).
 
+Jar files are available in the [downloads][download section] and on
+sonatype.org ([snapshots][], [releases][]).
+
 ## Examples
 
 The wrapper ships with some examples in `src/examples/java`:
@@ -78,9 +81,9 @@ The wrapper ships with some examples in `src/examples/java`:
 
 You can use gradle tasks to compile and run these examples with one command.
 If you don't want to use gradle there is also a precompiled jar with all
-dependencies available for download ([jar-all][]).
+dependencies available ([jar-all][]).
 
-First create a wrapper, remember to substitute all credentials with real ones
+First create a wrapper and remember to substitute all credentials with real ones
 ([register an app][register-app] if you need client_id/secret):
 
     # with gradle
@@ -189,3 +192,6 @@ See LICENSE for details.
 [Apache Maven]: http://maven.apache.org/
 [jar]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.0.jar
 [jar-all]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.0-all.jar
+[downloads]: https://github.com/soundcloud/java-api-wrapper/archives/master
+[snapshots]: https://oss.sonatype.org/content/repositories/snapshots/com/soundcloud/java-api-wrapper/
+[releases]: https://oss.sonatype.org/content/repositories/releases/com/soundcloud/java-api-wrapper/
