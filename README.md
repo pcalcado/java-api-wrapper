@@ -3,10 +3,11 @@
 OAuth2 SoundCloud API wrapper written in Java ([javadoc][]), extracted from the
 [SoundCloud Android][] codebase.
 
-It is lightweight and requires a minimum of external dependencies
-so should be easily embeddable in both desktop and mobile applications.
+It is simple to use and requires a minimum of external dependencies (compared to
+the OAuth1 wrapper) so should be easily embeddable in both desktop and
+mobile applications.
 
-## Basic usage
+## Usage
 
 Create a wrapper instance:
 
@@ -66,12 +67,12 @@ The project uses the groovy-based build system [gradle][] (version 1.x):
 You don't have to use gradle - the repo also contains a `pom.xml` file which
 can be used to build and test the project with [Apache Maven][] (`mvn install`).
 
-Jar files are available in the [downloads][download section] and on
+Jar files are available in the Github [download section][downloads] and on
 sonatype.org ([snapshots][], [releases][]).
 
 ## Examples
 
-The wrapper ships with some examples in `src/examples/java`:
+The wrapper ships with a few examples in `src/examples/java`:
 
   * [CreateWrapper][] creates a wrapper and obtains an access token using
   login / password.
@@ -164,9 +165,6 @@ easily create project files with gradle:
 
     $ gradle idea     # Intellij IDEA
     $ gradle eclipse  # Eclipse
-
-Please refrain from committing any IDE configuration files to the repo, as
-these can easily be regenerated.
 
 ## Credits / License
 
