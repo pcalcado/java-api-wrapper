@@ -7,7 +7,6 @@ sourceCompatibility = 1.6
 version = '1.0.0'
 group   = 'com.soundcloud'
 
-configurations { deployerJars }
 repositories   { mavenCentral() }
 
 sourceSets {
@@ -51,46 +50,7 @@ uploadArchives {
          }
        }
        withXml { xml ->
-          new XmlParser().parseText("""
-           <project>
-            <scm>
-              <connection>scm:git:git://github.com/soundcloud/java-api-wrapper.git</connection>
-              <developerConnection>scm:git:git@github.com:soundcoud/java-api-wrapper.git</developerConnection>
-              <url>https://github.com/soundcloud/java-api-wrapper</url>
-            </scm>
-
-            <developers>
-             <developer>
-               <id>jberkel</id>
-               <name>Jan Berkel</name>
-               <email>jan@soundcloud.com</email>
-             </developer>
-            </developers>
-
-            <build>
-              <plugins>
-                <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-compiler-plugin</artifactId>
-                  <version>2.3</version>
-                </plugin>
-                <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-gpg-plugin</artifactId>
-                  <executions>
-                    <execution>
-                      <id>sign-artifacts</id>
-                      <phase>verify</phase>
-                      <goals>
-                        <goal>sign</goal>
-                      </goals>
-                    </execution>
-                  </executions>
-                </plugin>
-              </plugins>
-            </build>
-           </project>
-            """).children().each { kid -> xml.asNode().append(kid) }
+          new XmlParser().parse(new File("pom-include.xml")).children().each { kid -> xml.asNode().append(kid) }
         }
     }
   }
