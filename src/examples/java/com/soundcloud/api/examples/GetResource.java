@@ -6,6 +6,9 @@ import com.soundcloud.api.Http;
 import com.soundcloud.api.Request;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 
@@ -33,13 +36,25 @@ public final class GetResource {
             try {
                 HttpResponse resp = wrapper.get(resource);
                 if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                    System.out.println("\n" + Http.getJSON(resp).toString(4));
+                    System.out.println("\n" + formatJSON(Http.getString(resp)));
                 } else {
                     System.err.println("Invalid status received: " + resp.getStatusLine());
                 }
             } finally {
                 // serialise wrapper state again (token might have been refreshed)
                 wrapper.toFile(wrapperFile);
+            }
+        }
+    }
+
+    static String formatJSON(String s) {
+        try {
+            return new JSONObject(s).toString(4);
+        } catch (JSONException e) {
+            try {
+                return new JSONArray(s).toString(4);
+            } catch (JSONException e2) {
+                return s;
             }
         }
     }
