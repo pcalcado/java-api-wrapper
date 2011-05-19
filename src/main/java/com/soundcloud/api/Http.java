@@ -65,11 +65,10 @@ public class Http {
         try {
             return new JSONObject(json);
         } catch (JSONException e) {
-            throw new IOException("could not parse JSON document: " +
-                    (json.length() > 80 ? (json.substring(0, 79) + "...") : json));
+            throw new IOException("could not parse JSON document: "+e.getMessage()+" "+
+                    (json.length() > 80 ? (json.substring(0, 79) + "..." ) : json));
         }
     }
-
 
     /**
      * @return the default HttpParams
