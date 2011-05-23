@@ -196,13 +196,21 @@ public class Request implements Iterable<NameValuePair> {
         }
     }
 
-    @Override public String toString() {
-        return mResource == null ? queryString() : toUrl();
-    }
-
     @Override public Iterator<NameValuePair> iterator() {
         return params.iterator();
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "params=" + params +
+                ", files=" + files +
+                ", mToken=" + mToken +
+                ", mResource='" + mResource + '\'' +
+                ", listener=" + listener +
+                '}';
+    }
+
 
     /**
      * Updates about the amount of bytes already transferred.

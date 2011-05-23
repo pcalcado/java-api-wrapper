@@ -130,15 +130,21 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override public Token clientCredentials() throws IOException {
-        final Token signup = requestToken(Request.to(Endpoints.TOKEN).with(
+        return clientCredentials(Token.SCOPE_SIGNUP);
+    }
+
+    @Override public Token clientCredentials(String scope) throws IOException {
+        final Request req = Request.to(Endpoints.TOKEN).with(
                 "grant_type", CLIENT_CREDENTIALS,
-                "client_id", mClientId,
-                "client_secret", mClientSecret));
-        if (!signup.signupScoped()) {
-            throw new InvalidTokenException(-1, "Could not obtain signup scope (got: '" +
-                    signup.scope + "')");
+                "client_id",  mClientId,
+                "client_secret", mClientSecret);
+        if (scope != null) req.add("scope", scope);
+        final Token token = requestToken(req);
+        if (scope != null && !token.scoped(scope)) {
+            throw new InvalidTokenException(-1, "Could not obtain requested scope '"+scope+"' (got: '" +
+                    token.scope + "')");
         }
-        return signup;
+        return token;
     }
 
     @Override public Token refreshToken() throws IOException {

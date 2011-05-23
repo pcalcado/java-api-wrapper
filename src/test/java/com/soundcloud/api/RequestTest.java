@@ -42,12 +42,6 @@ public class RequestTest {
     }
 
     @Test
-    public void shouldHaveToStringAsQueryString() throws Exception {
-        Request p = new Request().with("foo", 100, "baz", 22.3f);
-        assertThat(p.toString(), equalTo(p.queryString()));
-    }
-
-    @Test
     public void shouldGenerateUrlWithParameters() throws Exception {
         Request p = new Request().with("foo", 100, "baz", 22.3f);
         assertThat(p.toUrl("http://foo.com"), equalTo("http://foo.com?foo=100&baz=22.3"));
@@ -151,11 +145,8 @@ public class RequestTest {
     @Test
     public void toStringShouldWork() throws Exception {
         assertThat(
-                new Request().with("1", "2").toString(),
-                equalTo("1=2"));
-
-        assertThat(
                 new Request("/foo").with("1", "2").toString(),
-                equalTo("/foo?1=2"));
+                equalTo("Request{params=[1=2], files=null, mToken=null, mResource='/foo', listener=null}"));
+
     }
 }

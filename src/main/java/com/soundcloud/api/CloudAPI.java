@@ -64,6 +64,22 @@ public interface CloudAPI {
      */
     Token clientCredentials() throws IOException;
 
+     /**
+     * Requests a token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.4">
+     * Client Credentials</a>.
+     *
+     * Note that this token is <b>not</b> set as the current token in the wrapper - it should only be used
+     * for one request (typically the signup / user creation request).
+     * Also note that not all apps are allowed to request for all scopes (the wrapper throws
+     * InvalidTokenException in this case).
+     *
+     * @param scope the requested scope
+     * @return a valid token
+     * @throws IOException IO/Error
+     * @throws com.soundcloud.api.CloudAPI.InvalidTokenException if requested scope is not available
+     */
+    Token clientCredentials(String scope) throws IOException;
+
     /**
      * Tries to refresh the currently used access token with the refresh token.
      * If successful the API wrapper will have the new token set already.

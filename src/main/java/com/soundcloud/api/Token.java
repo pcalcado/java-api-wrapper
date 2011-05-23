@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Represents an OAuth2 access/refresh token pair.
@@ -18,7 +19,9 @@ public class Token implements Serializable {
     public static final String SCOPE         = "scope";
     public static final String EXPIRES_IN    = "expires_in";
 
-    public static final String SCOPE_SIGNUP  = "signup";
+    public static final String SCOPE_DEFAULT    = "*";
+    public static final String SCOPE_SIGNUP     = "signup";
+    public static final String SCOPE_PLAYCOUNT  = "playcount";
 
     public String access, refresh, scope;
     public long expiresIn;
@@ -62,14 +65,21 @@ public class Token implements Serializable {
         return expiresIn == 0 ? null : new Date(expiresIn);
     }
 
-    /** @return has token the wildcard scope ("*") */
-    public boolean starScoped() {
-        return scope != null && scope.contains("*");
+    public boolean defaultScoped() {
+        return scoped(SCOPE_DEFAULT);
     }
 
     /** @return has token the signup scope ("signup") */
     public boolean signupScoped() {
-        return scope != null && scope.contains(SCOPE_SIGNUP);
+        return scoped(SCOPE_SIGNUP);
+    }
+
+    public boolean scoped(String scope) {
+        if (this.scope != null) {
+            for (String s : this.scope.split(" "))
+                if (scope.equals(s)) return true;
+        }
+        return false;
     }
 
     /** @return is this token valid */

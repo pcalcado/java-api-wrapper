@@ -29,11 +29,11 @@ public class TokenTest {
     }
 
     @Test
-    public void shouldDetectStarScope() throws Exception {
+    public void shouldDefaultScope() throws Exception {
         Token t = new Token(null, null);
-        assertFalse(t.starScoped());
+        assertFalse(t.defaultScoped());
         t.scope = "signup *";
-        assertTrue(t.starScoped());
+        assertTrue(t.defaultScoped());
     }
 
     @Test
@@ -42,6 +42,14 @@ public class TokenTest {
         assertFalse(t.signupScoped());
         t.scope = "signup";
         assertTrue(t.signupScoped());
+    }
+
+    @Test
+    public void shouldProperlySeparateTokens() throws Exception {
+        Token t = new Token(null, null);
+        assertFalse(t.signupScoped());
+        t.scope = "notreallysignup";
+        assertFalse(t.signupScoped());
     }
 
     @Test
