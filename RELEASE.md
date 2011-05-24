@@ -4,6 +4,7 @@ Requirements:
 
  * Your gpg key is registered on a public keyserver (see [How To Generate PGP Signatures With Maven][])
  * You have an account on Sonatype OSS (see [Sonatype OSS Maven Repository Usage Guide][])
+ * You have added Sonatype repos and credentials to `.m2/settings.xml`
 
 Bump version constants in
 
