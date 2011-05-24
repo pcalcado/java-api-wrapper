@@ -20,6 +20,9 @@ Regenerate pom.xml
 
     $ gradle writePom
 
+This doesn't work properly at the moment - use `gradle uploadArchive` and copy
+`build/poms/pom-default.xml` to `pom.xml`.
+
 Releasing to Sonatype OSS (staging)
 
     (make sure there are no uncommitted changes in the repo)
