@@ -95,6 +95,16 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
         // writeResponse(resp, "me.json");
     }
 
+    @Test
+    public void updateMyDetails() throws Exception {
+        Request updateMe = Request.to(MY_DETAILS).with(
+                Params.User.WEBSITE, "http://mywebsite.com")
+                .withFile(Params.User.AVATAR, new File(getClass().getResource("cat.jpg").getFile()));
+
+        HttpResponse resp = api.put(updateMe);
+        assertThat(resp.getStatusLine().getStatusCode(), is(200));
+    }
+
     @SuppressWarnings({"UnusedDeclaration"})
     private void writeResponse(HttpResponse resp, String file) throws IOException {
         FileOutputStream fos = new FileOutputStream(file);
