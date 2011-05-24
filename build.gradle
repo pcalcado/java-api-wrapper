@@ -38,6 +38,7 @@ uploadArchives {
      }
      pom {
        project {
+         name        'SoundCloud Java API wrapper'
          description 'SoundCloud Java API wrapper (OAuth2 only), works on Android'
          url 'https://github.com/soundcloud/java-api-wrapper#readme'
          inceptionYear '2011'

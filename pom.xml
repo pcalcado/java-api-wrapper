@@ -3,7 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.soundcloud</groupId>
   <artifactId>java-api-wrapper</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
+  <name>SoundCloud Java API wrapper</name>
   <description>SoundCloud Java API wrapper (OAuth2 only), works on Android</description>
   <url>https://github.com/soundcloud/java-api-wrapper#readme</url>
   <inceptionYear>2011</inceptionYear>

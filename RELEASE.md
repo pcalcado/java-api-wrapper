@@ -21,4 +21,4 @@ Upload to oss sonatype (snapshot)
 Releasing to oss sonatype (staging)
 
     $ mvn -DdryRun=true -Dresume=false -DskipTests release:prepare
-    $ mvn release:perform -Dgpg.keyname=jan@soundcloud.com
+    $ mvn release:perform -Darguments="-Dgpg.keyname=jan@soundcloud.com -Dgpg.passphrase="
