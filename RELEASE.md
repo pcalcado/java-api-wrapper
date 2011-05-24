@@ -14,14 +14,11 @@ Regenerate pom.xml
 
     $ gradle writePom
 
-Upload to to oss sonatype
+Upload to oss sonatype (snapshot)
 
     $ gradle uploadArchives
 
-Signing (does not work yet)
+Releasing to oss sonatype (staging)
 
-    $ mvn gpg:sign-and-deploy-file -DpomFile=build/poms/pom-default.xml \
-      -Dfile=build/libs/java-api-wrapper-1.0.0.jar \
-      -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ \
-      -DrepositoryId=sonatype-nexus-staging \
-      -Dgpg.keyname=jan@soundcloud.com
+    $ mvn -DdryRun=true -Dresume=false -DskipTests release:prepare
+    $ mvn release:perform -Dgpg.keyname=jan@soundcloud.com
