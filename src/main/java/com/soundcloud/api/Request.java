@@ -13,6 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,7 +49,23 @@ public class Request implements Iterable<NameValuePair> {
      * @param resource the base resource
      */
     public Request(String resource) {
-       mResource = resource;
+        if (resource != null && resource.contains("?")) {
+            String query = resource.substring(Math.min(resource.length(), resource.indexOf("?")+1),
+                    resource.length());
+            for (String s : query.split("&")) {
+                String[] kv = s.split("=", 2);
+                if (kv != null && kv.length == 2) {
+                    try {
+                        params.add(new BasicNameValuePair(
+                                URLDecoder.decode(kv[0], "UTF-8"),
+                                URLDecoder.decode(kv[1], "UTF-8")));
+                    } catch (UnsupportedEncodingException ignored) {}
+                }
+            }
+            mResource = resource.substring(0, resource.indexOf("?"));
+        } else {
+            mResource = resource;
+        }
     }
 
     /**

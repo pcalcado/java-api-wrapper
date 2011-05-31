@@ -147,6 +147,20 @@ public class RequestTest {
         assertThat(
                 new Request("/foo").with("1", "2").toString(),
                 equalTo("Request{params=[1=2], files=null, mToken=null, mResource='/foo', listener=null}"));
+    }
 
+    @Test
+    public void itShouldParseExistingQueryParameters() throws Exception {
+        assertThat(
+            new Request("/foo?bar=baz").with("1", "2").toUrl(),
+            equalTo("/foo?bar=baz&1=2"));
+
+        assertThat(
+            new Request("/foo?").with("1", "2").toUrl(),
+            equalTo("/foo?1=2"));
+
+        assertThat(
+            new Request("/foo?bar=baz&foo=bar").with("1", "2").toUrl(),
+            equalTo("/foo?bar=baz&foo=bar&1=2"));
     }
 }
