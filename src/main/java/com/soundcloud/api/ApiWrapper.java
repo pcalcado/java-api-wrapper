@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ClientConnectionManager;
@@ -80,6 +81,9 @@ public class ApiWrapper implements CloudAPI, Serializable {
     private final URI mRedirectUri;
     transient private HttpClient httpClient;
     transient private TokenListener listener;
+
+    /** debug request details to stderr */
+    public boolean debugRequests;
 
     /**
      * Constructs a new ApiWrapper instance.
@@ -351,19 +355,19 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override public HttpResponse get(Request request) throws IOException {
-        return execute(request.buildRequest(HttpGet.class));
+        return execute(request, HttpGet.class);
     }
 
     @Override public HttpResponse put(Request request) throws IOException {
-        return execute(request.buildRequest(HttpPut.class));
+        return execute(request, HttpPut.class);
     }
 
     @Override public HttpResponse post(Request request) throws IOException {
-        return execute(request.buildRequest(HttpPost.class));
+        return execute(request, HttpPost.class);
     }
 
     @Override public HttpResponse delete(Request request) throws IOException {
-        return execute(request.buildRequest(HttpDelete.class));
+        return execute(request, HttpDelete.class);
     }
 
     @Override public Token getToken() {
@@ -387,6 +391,11 @@ public class ApiWrapper implements CloudAPI, Serializable {
      */
     public HttpResponse execute(HttpRequest req) throws IOException {
         return getHttpClient().execute(env.sslResourceHost, addHeaders(req));
+    }
+
+    protected HttpResponse execute(Request req, Class<? extends HttpRequestBase> reqType) throws IOException {
+        if (debugRequests) System.err.println(reqType.getSimpleName()+" "+req);
+        return execute(req.buildRequest(reqType));
     }
 
     /**
