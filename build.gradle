@@ -77,6 +77,7 @@ def example(name, mainClass, arguments) {
 example('createWrapper', 'CreateWrapper', { [client_id, client_secret, login, password, env] })
 example('getResource',   'GetResource',   { resource })
 example('uploadFile',    'UploadFile',    { file })
+example('dumpToken',     'DumpToken',     { [] })
 
 task writePom << {
   repositories.mavenDeployer().getPom().writeTo("pom.xml")
