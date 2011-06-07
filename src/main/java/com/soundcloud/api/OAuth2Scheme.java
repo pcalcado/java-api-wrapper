@@ -28,7 +28,7 @@ class OAuth2Scheme implements AuthScheme {
     public HttpParams mHttpParams;
     private CloudAPI mApi;
 
-    public static Pattern AUTHORIZATION_HEADER_PATTERN = Pattern.compile("OAuth (\\w+)");
+    public static Pattern AUTHORIZATION_HEADER_PATTERN = Pattern.compile("^OAuth (\\w+)$");
 
     public OAuth2Scheme(CloudAPI api, HttpParams params) {
         mApi = api;
