@@ -68,7 +68,7 @@ You don't have to use gradle - the repo also contains a `pom.xml` file which
 can be used to build and test the project with [Apache Maven][] (`mvn install`).
 
 Jar files are available in the Github [download section][downloads] and on
-sonatype.org ([snapshots][], [releases][]).
+sonatype.org / maven ([snapshots][], [releases][], [maven-central][]).
 
 ## Examples
 
@@ -193,3 +193,4 @@ See LICENSE for details.
 [downloads]: https://github.com/soundcloud/java-api-wrapper/archives/master
 [snapshots]: https://oss.sonatype.org/content/repositories/snapshots/com/soundcloud/java-api-wrapper/
 [releases]: https://oss.sonatype.org/content/repositories/releases/com/soundcloud/java-api-wrapper/
+[maven-central]: http://repo1.maven.org/maven2/com/soundcloud/java-api-wrapper/
