@@ -38,6 +38,7 @@ import java.util.Map;
 public class Request implements Iterable<NameValuePair> {
     private List<NameValuePair> params = new ArrayList<NameValuePair>(); // XXX should probably be lazy
     private Map<String,File> files;
+
     private Token mToken;
     private String mResource;
     private TransferProgressListener listener;
@@ -66,6 +67,17 @@ public class Request implements Iterable<NameValuePair> {
         } else {
             mResource = resource;
         }
+    }
+
+    /**
+     * @param request the request to be copied
+     */
+    public Request(Request request) {
+        mResource = request.mResource;
+        mToken = request.mToken;
+        listener = request.listener;
+        params = new ArrayList<NameValuePair>(request.params);
+        if (request.files != null) files = new HashMap<String, File>(request.files);
     }
 
     /**
@@ -226,6 +238,14 @@ public class Request implements Iterable<NameValuePair> {
                 ", mResource='" + mResource + '\'' +
                 ", listener=" + listener +
                 '}';
+    }
+
+    /* package */ Token getToken() {
+        return mToken;
+    }
+
+    /* package */ TransferProgressListener getListener() {
+        return listener;
     }
 
 

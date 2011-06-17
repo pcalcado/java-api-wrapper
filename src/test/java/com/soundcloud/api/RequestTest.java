@@ -1,9 +1,7 @@
 package com.soundcloud.api;
 
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -162,5 +160,27 @@ public class RequestTest {
         assertThat(
             new Request("/foo?bar=baz&foo=bar").with("1", "2").toUrl(),
             equalTo("/foo?bar=baz&foo=bar&1=2"));
+    }
+
+    @Test
+    public void shouldHaveCopyConstructor() {
+        Request orig = new Request("/foo").with("1", 2, "3",4);
+        Request copy = new Request(orig);
+        assertThat(copy.toUrl(),equalTo(orig.toUrl()));
+        assertThat(copy.getToken(),equalTo(orig.getToken()));
+    }
+
+    @Test
+    public void shouldNotModifyOriginal() {
+        Request orig = new Request("/foo").with("1", 2, "3",4);
+        orig.setProgressListener(new Request.TransferProgressListener(){
+            @Override public void transferred(long amount) {}
+        });
+        Request copy = new Request(orig);
+        orig.add("cursor","asdf");
+        orig.usingToken(new Token("access","refresh"));
+        assertThat(copy.toUrl(), not(equalTo(orig.toUrl())));
+        assertThat(copy.getToken(), not(equalTo(orig.getToken())));
+        assertThat(orig.getListener(),equalTo(copy.getListener()));
     }
 }
