@@ -37,10 +37,24 @@ public interface CloudAPI {
      */
     Token login(String username, String password) throws IOException;
 
+    /**
+     * Request a token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.2">
+     * Resource Owner Password Credentials</a>.
+     *
+     * @param username SoundCloud username
+     * @param password SoundCloud password
+     * @param scope    the desired scope
+     * @return a valid token
+     * @throws com.soundcloud.api.CloudAPI.InvalidTokenException
+     *                     invalid token
+     * @throws IOException In case of network/server errors
+     */
+    Token login(String username, String password, String scope) throws IOException;
+
 
     /**
      * Request a token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.1">
-     * Authorization Code</a>.
+     * Authorization Code</a>, requesting a default scope.
      *
      * @param code the authorization code
      * @return a valid token
@@ -48,6 +62,18 @@ public interface CloudAPI {
      * @throws IOException In case of network/server errors
      */
     Token authorizationCode(String code) throws IOException;
+
+    /**
+     * Request a token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-10#section-4.1.1">
+     * Authorization Code</a> with a specified scope.
+     *
+     * @param code the authorization code
+     * @param scope the desired scope
+     * @return a valid token
+     * @throws com.soundcloud.api.CloudAPI.InvalidTokenException invalid token
+     * @throws IOException In case of network/server errors
+     */
+    Token authorizationCode(String code, String scope) throws IOException;
 
     /**
      * Request a "signup" token using <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.4">

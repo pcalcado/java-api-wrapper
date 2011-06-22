@@ -1,6 +1,7 @@
 package com.soundcloud.api;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 import org.json.JSONObject;
@@ -17,8 +18,14 @@ public class TokenTest {
     }
 
     @Test
-    public void shouldBeValid() throws Exception {
+    public void shouldBeValidWhenAccessAndRefreshTokenArePresent() throws Exception {
         Token t = new Token("1", "2");
+        assertTrue(t.valid());
+    }
+
+    @Test
+    public void shouldBeValidWhenOnlyAccessTokenPresentAndNonExpirationScoped() throws Exception {
+        Token t = new Token("1", null, Token.SCOPE_NON_EXPIRING);
         assertTrue(t.valid());
     }
 
@@ -32,36 +39,32 @@ public class TokenTest {
     public void shouldDefaultScope() throws Exception {
         Token t = new Token(null, null);
         assertFalse(t.defaultScoped());
-        t.scope = "signup *";
+
+        t = new Token(null, null, "*");
         assertTrue(t.defaultScoped());
     }
 
     @Test
     public void shouldDetectSignupScope() throws Exception {
-        Token t = new Token(null, null);
-        assertFalse(t.signupScoped());
-        t.scope = "signup";
-        assertTrue(t.signupScoped());
+        assertFalse(new Token(null, null).signupScoped());
+        assertTrue(new Token(null, null, "signup").signupScoped());
     }
 
     @Test
     public void shouldProperlySeparateTokens() throws Exception {
         Token t = new Token(null, null);
         assertFalse(t.signupScoped());
-        t.scope = "notreallysignup";
+
+        t = new Token(null, null, "notreallysignup");
         assertFalse(t.signupScoped());
     }
 
     @Test
     public void shouldHaveProperEqualsMethod() throws Exception {
-        Token t1 = new Token("1", "2");
-        Token t2 = new Token("1", "2");
-        assertEquals(t1, t2);
-
-        t1.scope = "foo";
-        assertFalse(t1.equals(t2));
-        t2.scope = "foo";
-        assertEquals(t1, t2);
+        assertEquals(new Token("1", "2"), new Token("1", "2"));
+        assertFalse(new Token("1", "2").equals(new Token("1", "3")));
+        assertFalse(new Token("1", "2").equals(new Token("1", "2", "bla")));
+        assertEquals(new Token("1", "2", "bla"), new Token("1", "2", "bla"));
     }
 
     @Test
@@ -73,7 +76,7 @@ public class TokenTest {
                 "    \"scope\":    \"*\"\n" +
                 "}"));
 
-        assertThat(t.scope, equalTo("*"));
+        assertThat(t.scoped("*"), is(true));
         assertThat(t.access, equalTo("1234"));
         assertThat(t.refresh, equalTo("5678"));
         assertNotNull(t.getExpiresIn());

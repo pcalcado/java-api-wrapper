@@ -108,28 +108,41 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override public Token login(String username, String password) throws IOException {
+        return login(username, password, null);
+    }
+
+    @Override public Token login(String username, String password, String scope) throws IOException {
         if (username == null || password == null) {
             throw new IllegalArgumentException("username or password is null");
         }
-        mToken = requestToken(Request.to(Endpoints.TOKEN).with(
+        final Request request = Request.to(Endpoints.TOKEN).with(
                 "grant_type", PASSWORD,
                 "client_id", mClientId,
                 "client_secret", mClientSecret,
                 "username", username,
-                "password", password));
+                "password", password);
+        if (scope != null) request.add("scope", scope);
+        mToken = requestToken(request);
         return mToken;
     }
 
     @Override public Token authorizationCode(String code) throws IOException {
+        return authorizationCode(code, null);
+    }
+
+    @Override public Token authorizationCode(String code, String scope) throws IOException {
         if (code == null) {
             throw new IllegalArgumentException("username or password is null");
         }
-        mToken = requestToken(Request.to(Endpoints.TOKEN).with(
+        final Request request = Request.to(Endpoints.TOKEN).with(
                 "grant_type", AUTHORIZATION_CODE,
                 "client_id", mClientId,
                 "client_secret", mClientSecret,
                 "redirect_uri", mRedirectUri,
-                "code", code));
+                "code", code);
+        if (scope != null) request.add("scope", scope);
+
+        mToken = requestToken(request);
         return mToken;
     }
 

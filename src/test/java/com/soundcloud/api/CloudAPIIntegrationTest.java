@@ -36,12 +36,19 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
                 null,
                 null,
                 Env.SANDBOX);
+    }
 
-        api.login("api-testing", "testing");
+    private Token login() throws IOException {
+        return login(null);
+    }
+
+    private Token login(String scope) throws IOException {
+        return api.login("api-testing", "testing", scope);
     }
 
     @Test
     public void shouldUploadASimpleAudioFile() throws Exception {
+        login();
         HttpResponse resp = api.post(Request.to(TRACKS).with(
                   TITLE, "Hello Android",
                   POST_TO_EMPTY, "")
@@ -53,11 +60,13 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
 
     @Test(expected = IOException.class)
     public void shouldNotGetASignupTokenWhenInofficialApp() throws Exception {
+        login();
         api.clientCredentials();
     }
 
     @Test
     public void shouldReturn401WithInvalidToken() throws Exception {
+        login();
         api.setToken(new Token("invalid", "invalid"));
         HttpResponse resp = api.get(Request.to(Endpoints.MY_DETAILS));
         assertThat(resp.getStatusLine().getStatusCode(), is(401));
@@ -65,6 +74,8 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
 
     @Test
     public void shouldRefreshAutomaticallyWhenTokenExpired() throws Exception {
+        login();
+
         HttpResponse resp = api.get(Request.to(Endpoints.MY_DETAILS));
         assertThat(resp.getStatusLine().getStatusCode(), is(200));
 
@@ -80,12 +91,16 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
 
     @Test
     public void shouldResolveUrls() throws Exception {
+        login();
+
         long id = api.resolve("http://sandbox-soundcloud.com/api-testing");
         assertThat(id, is(1862213L));
     }
 
     @Test
     public void readMyDetails() throws Exception {
+        login();
+
         HttpResponse resp = api.get(Request.to(Endpoints.MY_DETAILS));
         assertThat(resp.getStatusLine().getStatusCode(), is(200));
 
@@ -93,6 +108,28 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
 
         assertThat(me.getString("username"), equalTo("api-testing"));
         // writeResponse(resp, "me.json");
+    }
+
+    @Test
+    public void shouldLoginWithNonExpiringScope() throws Exception {
+        Token token = login(Token.SCOPE_NON_EXPIRING);
+        assertThat(token.scoped(Token.SCOPE_NON_EXPIRING), is(true));
+        assertThat(token.refresh, is(nullValue()));
+        assertThat(token.getExpiresIn(), is(nullValue()));
+        assertThat(token.valid(), is(true));
+
+        // make sure we can issue a request with this token
+        HttpResponse resp = api.get(Request.to(Endpoints.MY_DETAILS));
+        assertThat(resp.getStatusLine().getStatusCode(), is(200));
+    }
+
+    @Test
+    public void shouldNotRefreshWithNonExpiringScope() throws Exception {
+        Token token = login(Token.SCOPE_NON_EXPIRING);
+        assertThat(token.scoped(Token.SCOPE_NON_EXPIRING), is(true));
+        assertThat(api.invalidateToken(), is(nullValue()));
+        HttpResponse resp = api.get(Request.to(Endpoints.MY_DETAILS));
+        assertThat(resp.getStatusLine().getStatusCode(), is(401));
     }
 
     /*
