@@ -48,6 +48,17 @@ refreshes the token and retries the request so an API client usually does not
 need to care about this fact. If the client is interested (possibly to persist
 the updated token) it can register a listener with the wrapper.
 
+## Non-expiring access tokens (only applies 1.0.1-SNAPSHOT)
+
+Expiring access tokens provide more security but also add more complexity to
+the authentication process. If you don't want to use them you can request
+non-expiring tokens by specifying the scope "non-expiring" when exchanging the
+tokens:
+
+    Token token = wrapper.login("username", "password", Token.SCOPE_NON_EXPIRING);
+
+The resulting token will be valid until revoked manually.
+
 ## Requirements
 
 The wrapper depends on [Apache HttpClient][] (including the [HttpMime][]

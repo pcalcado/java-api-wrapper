@@ -20,8 +20,12 @@ public class Token implements Serializable {
     public static final String EXPIRES_IN    = "expires_in";
 
     public static final String SCOPE_DEFAULT      = "*";
+
+    /** Special scope for signup / password recovery */
     public static final String SCOPE_SIGNUP       = "signup";
     public static final String SCOPE_PLAYCOUNT    = "playcount";
+
+    /** Don't expire access token - returned tokens won't include a refresh token */
     public static final String SCOPE_NON_EXPIRING = "non-expiring";
 
     // XXX these should be private
