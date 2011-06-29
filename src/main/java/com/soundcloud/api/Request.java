@@ -11,6 +11,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -255,9 +256,11 @@ public class Request implements Iterable<NameValuePair> {
     public static interface TransferProgressListener {
         /**
          * @param amount number of bytes already transferred.
+         * @throws IOException if the transfer should be cancelled
          */
-        public void transferred(long amount);
+        public void transferred(long amount) throws IOException;
     }
+
 
 
     static class StringBodyNoHeaders extends StringBody {
