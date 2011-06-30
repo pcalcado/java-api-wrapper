@@ -144,9 +144,9 @@ Output:
 
 PUT a resource:
 
-  $ gradle putResource -Presource=/me -Pcontent='{ "user": { "city": "Testor" } }'
+    $ gradle putResource -Presource=/me -Pcontent='{ "user": { "city": "Testor" } }'
 
-Output
+Output:
 
     PUT /me
     {
