@@ -202,6 +202,14 @@ public interface CloudAPI {
     URI authorizationCodeUrl(String... options);
 
     /**
+     * Changes the default content type sent in the "Accept" header.
+     * If you don't set this it defaults to "application/json".
+     *
+     * @param contentType the request mime type.
+     */
+    void setDefaultContentType(String contentType);
+
+    /**
      * Interested in changes to the current token.
      */
     interface TokenListener {

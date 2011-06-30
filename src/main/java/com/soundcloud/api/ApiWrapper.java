@@ -72,6 +72,7 @@ import java.util.Arrays;
  */
 public class ApiWrapper implements CloudAPI, Serializable {
     private static final long serialVersionUID = 3662083416905771921L;
+    public static final String DEFAULT_CONTENT_TYPE = "application/json";
 
     /** The current environment */
     public final Env env;
@@ -84,6 +85,9 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     /** debug request details to stderr */
     public boolean debugRequests;
+
+
+    private String mDefaultContentType;
 
     /**
      * Constructs a new ApiWrapper instance.
@@ -420,6 +424,15 @@ public class ApiWrapper implements CloudAPI, Serializable {
         oos.close();
     }
 
+
+    public String getDefaultContentType() {
+        return (mDefaultContentType == null) ? DEFAULT_CONTENT_TYPE : mDefaultContentType;
+    }
+
+    public void setDefaultContentType(String contentType) {
+        mDefaultContentType = contentType;
+    }
+
     /**
      * Read wrapper from a file
      * @param f  the file
@@ -453,7 +466,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
     /** Forces JSON */
     protected HttpRequest addAcceptHeader(HttpRequest request) {
         if (!request.containsHeader("Accept")) {
-            request.addHeader("Accept", "application/json");
+            request.addHeader("Accept", getDefaultContentType());
         }
         return request;
     }

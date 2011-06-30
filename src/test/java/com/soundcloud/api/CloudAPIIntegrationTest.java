@@ -1,6 +1,7 @@
 package com.soundcloud.api;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 import org.apache.http.HttpResponse;
@@ -8,6 +9,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.ws.Endpoint;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -125,6 +127,10 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
         HttpResponse resp = api.get(Request.to(Endpoints.MY_DETAILS));
         assertThat(resp.getStatusLine().getStatusCode(), is(200));
 
+        assertThat(
+                resp.getFirstHeader("Content-Type").getValue(),
+                containsString("application/json"));
+
         JSONObject me = Http.getJSON(resp);
 
         assertThat(me.getString("username"), equalTo("api-testing"));
@@ -151,6 +157,18 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
         assertThat(api.invalidateToken(), is(nullValue()));
         HttpResponse resp = api.get(Request.to(Endpoints.MY_DETAILS));
         assertThat(resp.getStatusLine().getStatusCode(), is(401));
+    }
+
+    @Test
+    public void shouldChangeContentType() throws Exception {
+        login();
+
+        api.setDefaultContentType("application/xml");
+        HttpResponse resp = api.get(Request.to(Endpoints.MY_DETAILS));
+
+        assertThat(
+                resp.getFirstHeader("Content-Type").getValue(),
+                containsString("application/xml"));
     }
 
     /*
