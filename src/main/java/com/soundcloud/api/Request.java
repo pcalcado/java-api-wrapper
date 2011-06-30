@@ -1,5 +1,6 @@
 package com.soundcloud.api;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -44,6 +45,7 @@ public class Request implements Iterable<NameValuePair> {
     private List<NameValuePair> mParams = new ArrayList<NameValuePair>(); // XXX should probably be lazy
     private Map<String, File> mFiles;
     private Map<String, ByteBuffer> mByteBuffers;
+    private HttpEntity mEntity;
 
     private Token mToken;
     private String mResource;
@@ -120,7 +122,7 @@ public class Request implements Iterable<NameValuePair> {
        if (args != null) {
             if (args.length % 2 != 0) throw new IllegalArgumentException("need even number of arguments");
             for (int i = 0; i < args.length; i += 2) {
-                this.add(args[i].toString(), args[i + 1]);
+                add(args[i].toString(), args[i + 1]);
             }
        }
        return this;
@@ -196,6 +198,34 @@ public class Request implements Iterable<NameValuePair> {
     }
 
     /**
+     * Adds an arbitrary entity to the request (used with POST/PUT)
+     * @param entity the entity to POST/PUT
+     * @return this
+     */
+    public Request withEntity(HttpEntity entity) {
+        mEntity = entity;
+        return this;
+    }
+
+    /**
+     * Adds string content to the request (used with POST/PUT)
+     * @param content the content to POST/PUT
+     * @param contentType the content type
+     * @return this
+     */
+    public Request withContent(String content, String contentType) {
+        try {
+            StringEntity stringEntity = new StringEntity(content);
+            if (contentType != null) {
+                stringEntity.setContentType(contentType);
+            }
+            return withEntity(stringEntity);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * @param listener a listener for receiving notifications about transfer progress
      * @return this
      */
@@ -248,7 +278,11 @@ public class Request implements Iterable<NameValuePair> {
                 } else if (!mParams.isEmpty()) {
                     request.setHeader("Content-Type", "application/x-www-form-urlencoded");
                     enclosingRequest.setEntity(new StringEntity(queryString()));
+                } else if (mEntity != null) {
+                    request.setHeader(mEntity.getContentType());
+                    enclosingRequest.setEntity(mEntity);
                 }
+
                 request.setURI(URI.create(mResource));
             } else { // just plain GET/DELETE/...
                 request.setURI(URI.create(toUrl()));

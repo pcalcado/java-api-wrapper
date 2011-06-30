@@ -13,9 +13,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.auth.AUTH;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -146,6 +146,32 @@ public class RequestTest {
         assertThat(encoded, containsString("key"));
         assertThat(encoded, containsString("value"));
         assertThat(encoded, containsString("testing"));
+    }
+
+    @Test
+    public void shouldIncludeAnyEntityInRequest() throws Exception {
+        HttpPost request = Request.to("/too")
+                .withEntity(new StringEntity("foo"))
+                .buildRequest(HttpPost.class);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        request.getEntity().writeTo(os);
+        String body = os.toString();
+        assertThat("foo", equalTo(body));
+    }
+
+    @Test
+    public void shouldIncludeContentInRequest() throws Exception {
+        HttpPost request = Request.to("/too")
+                .withContent("<foo><baz>content</baz></foo>", "application/xml")
+                .buildRequest(HttpPost.class);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        request.getEntity().writeTo(os);
+        String body = os.toString();
+
+        assertThat(request.getFirstHeader("Content-Type").getValue(), equalTo("application/xml"));
+        assertThat("<foo><baz>content</baz></foo>", equalTo(body));
     }
 
     @Test

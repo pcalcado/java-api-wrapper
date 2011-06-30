@@ -3,6 +3,7 @@
   * Support for non-expiring scope
   * Cancellation of uploads
   * Added Request#withFile(String, byte[]), Request#withFile(String, ByteBuffer)
+  * Added Request#withEntity(HttpEntity) and Request#withContent(String, String)
 
 ## 1.0.0 2011-05-19
 
