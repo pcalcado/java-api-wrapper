@@ -59,6 +59,11 @@ tokens:
 
 The resulting token will be valid until revoked manually.
 
+For the `authorization_code` grant type you need to request the scope like so:
+
+    URI uri = wrapper.authorizationCodeUrl(Endpoints.CONNECT, Token.SCOPE_NON_EXPIRING);
+    // open uri in browser / WebView etc.
+
 ## Requirements
 
 The wrapper depends on [Apache HttpClient][] (including the [HttpMime][]
