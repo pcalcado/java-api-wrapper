@@ -9,9 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
     // http://sandbox-soundcloud.com/you/apps/java-api-wrapper-test-app
@@ -57,6 +59,25 @@ public class CloudAPIIntegrationTest implements Params.Track, Endpoints {
         int status = resp.getStatusLine().getStatusCode();
         assertThat(status, is(201));
     }
+
+    @Test
+    public void shouldUploadASimpleAudioFileBytes() throws Exception {
+        login();
+
+        File f = new File(getClass().getResource("hello.aiff").getFile());
+        ByteBuffer bb = ByteBuffer.allocate((int) f.length());
+        FileInputStream fis = new FileInputStream(f);
+        for (;;) if (fis.getChannel().read(bb) <= 0) break;
+
+        HttpResponse resp = api.post(Request.to(TRACKS).with(
+                  TITLE, "Hello Android",
+                  POST_TO_EMPTY, "")
+                .withFile(ASSET_DATA, bb));
+
+        int status = resp.getStatusLine().getStatusCode();
+        assertThat(status, is(201));
+    }
+
 
     @Test(expected = IOException.class)
     public void shouldNotGetASignupTokenWhenInofficialApp() throws Exception {

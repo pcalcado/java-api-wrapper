@@ -5,16 +5,20 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MIME;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.AbstractContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,8 +41,9 @@ import java.util.Map;
  *  </code>
  */
 public class Request implements Iterable<NameValuePair> {
-    private List<NameValuePair> params = new ArrayList<NameValuePair>(); // XXX should probably be lazy
-    private Map<String,File> files;
+    private List<NameValuePair> mParams = new ArrayList<NameValuePair>(); // XXX should probably be lazy
+    private Map<String, File> mFiles;
+    private Map<String, ByteBuffer> mByteBuffers;
 
     private Token mToken;
     private String mResource;
@@ -58,7 +63,7 @@ public class Request implements Iterable<NameValuePair> {
                 String[] kv = s.split("=", 2);
                 if (kv != null && kv.length == 2) {
                     try {
-                        params.add(new BasicNameValuePair(
+                        mParams.add(new BasicNameValuePair(
                                 URLDecoder.decode(kv[0], "UTF-8"),
                                 URLDecoder.decode(kv[1], "UTF-8")));
                     } catch (UnsupportedEncodingException ignored) {}
@@ -77,8 +82,8 @@ public class Request implements Iterable<NameValuePair> {
         mResource = request.mResource;
         mToken = request.mToken;
         listener = request.listener;
-        params = new ArrayList<NameValuePair>(request.params);
-        if (request.files != null) files = new HashMap<String, File>(request.files);
+        mParams = new ArrayList<NameValuePair>(request.mParams);
+        if (request.mFiles != null) mFiles = new HashMap<String, File>(request.mFiles);
     }
 
     /**
@@ -103,7 +108,7 @@ public class Request implements Iterable<NameValuePair> {
      * @return this
      */
     public Request add(String name, Object value) {
-        params.add(new BasicNameValuePair(name, String.valueOf(value)));
+        mParams.add(new BasicNameValuePair(name, String.valueOf(value)));
         return this;
     }
 
@@ -133,7 +138,7 @@ public class Request implements Iterable<NameValuePair> {
 
     /** @return the size of the parameters */
     public int size() {
-        return params.size();
+        return mParams.size();
     }
 
     /**
@@ -141,7 +146,7 @@ public class Request implements Iterable<NameValuePair> {
      * list of parameters in an HTTP PUT or HTTP POST.
      */
     public String queryString() {
-        return URLEncodedUtils.format(params, "UTF-8");
+        return URLEncodedUtils.format(mParams, "UTF-8");
     }
 
     /**
@@ -149,7 +154,7 @@ public class Request implements Iterable<NameValuePair> {
      * @return an URL with the query string parameters appended
      */
     public String toUrl(String resource) {
-        return params.isEmpty() ? resource : resource + "?" + queryString();
+        return mParams.isEmpty() ? resource : resource + "?" + queryString();
     }
 
     public String toUrl() {
@@ -158,16 +163,37 @@ public class Request implements Iterable<NameValuePair> {
 
     /**
      * Registers a file to be uploaded with a POST or PUT request.
-     * @param name  the name of the file
+     * @param name  the name of the parameter
      * @param file  the file to be submitted
      * @return this
      */
     public Request withFile(String name, File file) {
-        if (files == null) files = new HashMap<String,File>();
-        if (file != null)  files.put(name, file);
+        if (mFiles == null) mFiles = new HashMap<String,File>();
+        if (file != null)  mFiles.put(name, file);
         return this;
     }
 
+    /**
+     * Registers binary data to be uploaded with a POST or PUT request.
+     * @param name  the name of the parameter
+     * @param data  the data to be submitted
+     * @return this
+     */
+    public Request withFile(String name, byte[] data) {
+        return withFile(name, ByteBuffer.wrap(data));
+    }
+
+    /**
+     * Registers binary data to be uploaded with a POST or PUT request.
+     * @param name  the name of the parameter
+     * @param data  the data to be submitted
+     * @return this
+     */
+    public Request withFile(String name, ByteBuffer data) {
+        if (mByteBuffers == null) mByteBuffers = new HashMap<String, ByteBuffer>();
+        if (data != null) mByteBuffers.put(name, data);
+        return this;
+    }
 
     /**
      * @param listener a listener for receiving notifications about transfer progress
@@ -176,6 +202,11 @@ public class Request implements Iterable<NameValuePair> {
     public Request setProgressListener(TransferProgressListener listener) {
         this.listener = listener;
         return this;
+    }
+
+    public boolean isMultipart() {
+        return (mFiles != null && !mFiles.isEmpty()) ||
+               (mByteBuffers != null && !mByteBuffers.isEmpty());
     }
 
     /**
@@ -191,19 +222,30 @@ public class Request implements Iterable<NameValuePair> {
             if (request instanceof HttpEntityEnclosingRequestBase) {
                 HttpEntityEnclosingRequestBase enclosingRequest =
                         (HttpEntityEnclosingRequestBase) request;
-                // multipart ?
-                if (files != null && !files.isEmpty()) {
+
+                if (isMultipart()) {
                     MultipartEntity multiPart = new MultipartEntity();
-                    for (Map.Entry<String,File> e : files.entrySet()) {
-                        multiPart.addPart(e.getKey(), new FileBody(e.getValue()));
+
+                    if (mFiles != null) {
+                        for (Map.Entry<String,File> e : mFiles.entrySet()) {
+                            multiPart.addPart(e.getKey(), new FileBody(e.getValue()));
+                        }
                     }
-                    for (NameValuePair pair : params) {
+
+                    if (mByteBuffers != null) {
+                        for (Map.Entry<String, ByteBuffer> e : mByteBuffers.entrySet()) {
+                            multiPart.addPart(e.getKey(), new ByteBufferBody(e.getValue()));
+                        }
+                    }
+
+                    for (NameValuePair pair : mParams) {
                         multiPart.addPart(pair.getName(), new StringBodyNoHeaders(pair.getValue()));
                     }
+
                     enclosingRequest.setEntity(listener == null ? multiPart :
                         new CountingMultipartEntity(multiPart, listener));
                 // form-urlencoded?
-                } else if (!params.isEmpty()) {
+                } else if (!mParams.isEmpty()) {
                     request.setHeader("Content-Type", "application/x-www-form-urlencoded");
                     enclosingRequest.setEntity(new StringEntity(queryString()));
                 }
@@ -227,14 +269,14 @@ public class Request implements Iterable<NameValuePair> {
     }
 
     @Override public Iterator<NameValuePair> iterator() {
-        return params.iterator();
+        return mParams.iterator();
     }
 
     @Override
     public String toString() {
         return "Request{" +
-                "params=" + params +
-                ", files=" + files +
+                "params=" + mParams +
+                ", files=" + mFiles +
                 ", mToken=" + mToken +
                 ", mResource='" + mResource + '\'' +
                 ", listener=" + listener +
@@ -274,6 +316,44 @@ public class Request implements Iterable<NameValuePair> {
 
         @Override public String getTransferEncoding() {
             return null;
+        }
+    }
+
+    static class ByteBufferBody extends AbstractContentBody {
+        private ByteBuffer mBuffer;
+
+        public ByteBufferBody(ByteBuffer buffer) {
+            super("application/octet-stream");
+            mBuffer = buffer;
+        }
+
+        @Override
+        public String getFilename() {
+            return null;
+        }
+
+        public String getTransferEncoding() {
+            return MIME.ENC_BINARY;
+        }
+
+        public String getCharset() {
+            return null;
+        }
+
+        @Override
+        public long getContentLength() {
+            return mBuffer.capacity();
+        }
+
+        @Override
+        public void writeTo(OutputStream out) throws IOException {
+            if (mBuffer.hasArray()) {
+                out.write(mBuffer.array());
+            } else {
+                byte[] dst = new byte[mBuffer.capacity()];
+                mBuffer.get(dst);
+                out.write(dst);
+            }
         }
     }
 }

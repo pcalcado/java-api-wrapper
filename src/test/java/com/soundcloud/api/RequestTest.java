@@ -2,9 +2,7 @@ package com.soundcloud.api;
 
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +15,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -114,6 +113,35 @@ public class RequestTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         request.getEntity().writeTo(os);
         String encoded = os.toString();
+        assertThat(encoded, containsString("foo"));
+        assertThat(encoded, containsString("key"));
+        assertThat(encoded, containsString("value"));
+        assertThat(encoded, containsString("testing"));
+    }
+
+    @Test
+    public void shouldDetectMultipartRequests() throws Exception {
+        assertFalse(Request.to("/foo")
+                .with("key", "value").isMultipart());
+
+        assertTrue(Request.to("/foo")
+                .with("key", "value")
+                .withFile("foo", "foo".getBytes()).isMultipart());
+    }
+
+    @Test
+    public void shouldCreateMultipartRequestWhenFilesAreAddedWithByteArray() throws Exception {
+        HttpPost request = Request.to("/foo")
+                .with("key", "value")
+                .withFile("testing", "foo".getBytes())
+                .buildRequest(HttpPost.class);
+
+        assertTrue(request.getEntity() instanceof MultipartEntity);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        request.getEntity().writeTo(os);
+        String encoded = os.toString();
+
         assertThat(encoded, containsString("foo"));
         assertThat(encoded, containsString("key"));
         assertThat(encoded, containsString("value"));
