@@ -1,6 +1,7 @@
 ## 1.0.1 tbd
 
   * Support for non-expiring scope
+  * Cancellation of uploads
 
 ## 1.0.0 2011-05-19
 

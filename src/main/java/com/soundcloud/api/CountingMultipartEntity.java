@@ -57,26 +57,25 @@ class CountingMultipartEntity implements HttpEntity {
 
     private static class CountingOutputStream extends FilterOutputStream {
         private final Request.TransferProgressListener mListener;
-        private long mTransferred;
+        private long mTransferred = 0;
 
         public CountingOutputStream(final OutputStream out, final Request.TransferProgressListener listener) {
             super(out);
-            this.mListener = listener;
-            this.mTransferred = 0;
+            mListener = listener;
         }
 
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
             out.write(b, off, len);
-            this.mTransferred += len;
-            if (mListener != null) this.mListener.transferred(this.mTransferred);
+            mTransferred += len;
+            if (mListener != null) mListener.transferred(mTransferred);
         }
 
         @Override
         public void write(int b) throws IOException {
             out.write(b);
-            this.mTransferred++;
-            if (mListener != null) this.mListener.transferred(this.mTransferred);
+            mTransferred++;
+            if (mListener != null) mListener.transferred(mTransferred);
         }
     }
 }
