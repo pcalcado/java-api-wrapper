@@ -94,6 +94,8 @@ The wrapper ships with a few examples in `src/examples/java`:
   login / password.
   * [GetResource][] performs a GET request for a resource and prints the
   JSON result.
+  * [PutResource][] performs a PUT request to update a resource and prints the
+  JSON result
   * [UploadFile][] uploads a file to SoundCloud.
 
 You can use gradle tasks to compile and run these examples with one command.
@@ -138,6 +140,18 @@ Output:
     {
         "username": "testing",
         "city": "Berlin"
+    ...
+
+PUT a resource:
+
+  $ gradle putResource -Presource=/me -Pcontent='{ "user": { "city": "Testor" } }'
+
+Output
+
+    PUT /me
+    {
+        "username": "testing",
+        "city": "Testor"
     ...
 
 Upload a file:
@@ -200,6 +214,7 @@ See LICENSE for details.
 [soundcloudapi-java-annouce]: http://blog.soundcloud.com/2010/01/08/java-wrapper/
 [CreateWrapper]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
 [GetResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/GetResource.java
+[PutResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/PutResource.java
 [UploadFile]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/UploadFile.java
 [SoundCloud Android]: https://market.android.com/details?id=com.soundcloud.android
 [register-app]: http://soundcloud.com/you/apps/new

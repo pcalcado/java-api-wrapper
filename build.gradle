@@ -76,6 +76,7 @@ def example(name, mainClass, arguments) {
 }
 example('createWrapper', 'CreateWrapper', { [client_id, client_secret, login, password, env] })
 example('getResource',   'GetResource',   { resource })
+example('putResource',   'PutResource',   { [resource, content] })
 example('uploadFile',    'UploadFile',    { file })
 example('dumpToken',     'DumpToken',     { [] })
 
