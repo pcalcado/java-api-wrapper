@@ -335,20 +335,30 @@ public class ApiWrapperTest {
     @Test
     public void shouldGenerateURIForLoginAuthCode() throws Exception {
         assertThat(
-                api.authorizationCodeUrl().toString(),
-                    equalTo("https://sandbox-soundcloud.com/connect?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
-                );
+            api.authorizationCodeUrl().toString(),
+                equalTo("https://sandbox-soundcloud.com/connect"+
+                        "?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
+            );
     }
 
 
     @Test
     public void shouldGenerateURIForLoginAuthCodeWithDifferentEndPoint() throws Exception {
         assertThat(
-                api.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT).toString(),
-                    equalTo("https://sandbox-soundcloud.com/connect/via/facebook?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
-                );
+            api.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT).toString(),
+                equalTo("https://sandbox-soundcloud.com/connect/via/facebook"+
+                        "?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
+        );
     }
 
+    @Test
+    public void shouldIncludeScopeInAuthorizationUrl() throws Exception {
+        assertThat(
+            api.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT, Token.SCOPE_NON_EXPIRING).toString(),
+                equalTo("https://sandbox-soundcloud.com/connect/via/facebook"+
+                        "?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code&scope=non-expiring")
+        );
+    }
 
     @Test
     public void shouldCallTokenStateListenerWhenTokenIsInvalidated() throws Exception {

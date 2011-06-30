@@ -200,14 +200,12 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override public URI authorizationCodeUrl(String... options) {
-        return getURI(
-                Request.to(options.length == 0 ? Endpoints.CONNECT : options[0]).with(
-                        "redirect_uri", mRedirectUri,
-                        "client_id", mClientId,
-                        "response_type", "code"
-                ),
-                false,
-                true);
+        final Request req = Request.to(options.length == 0 ? Endpoints.CONNECT : options[0]).with(
+                "redirect_uri", mRedirectUri,
+                "client_id", mClientId,
+                "response_type", "code");
+        if (options.length == 2) req.add("scope", options[1]);
+        return getURI(req, false, true);
     }
 
     /**

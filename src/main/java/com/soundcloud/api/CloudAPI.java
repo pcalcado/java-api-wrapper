@@ -195,7 +195,7 @@ public interface CloudAPI {
      * <li><code>error</code> in case of failure, this contains an error code (most likely
      * <code>access_denied</code>).
      * </ul>
-     * @param  options auth endpoint to use (leave out for default)
+     * @param  options auth endpoint to use (leave out for default), requested scope (leave out for default)
      * @return the URI to open in a browser/WebView etc.
      * @see CloudAPI#authorizationCode(String)
      */
