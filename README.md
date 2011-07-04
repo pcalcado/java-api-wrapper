@@ -48,7 +48,7 @@ refreshes the token and retries the request so an API client usually does not
 need to care about this fact. If the client is interested (possibly to persist
 the updated token) it can register a listener with the wrapper.
 
-## Non-expiring access tokens (only applies 1.0.1-SNAPSHOT)
+## Non-expiring access tokens (only applies version 1.0.1+)
 
 Expiring access tokens provide more security but also add more complexity to
 the authentication process. If you don't want to use them you can request
