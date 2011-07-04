@@ -209,7 +209,7 @@ See LICENSE for details.
 [Apache HttpClient]: http://hc.apache.org/httpcomponents-client-ga/
 [HttpMime]: http://hc.apache.org/httpcomponents-client-ga/httpmime
 [json-java]: http://json.org/java/
-[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/1.0.0/com/soundcloud/api/package-summary.html
+[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/1.0.1/com/soundcloud/api/package-summary.html
 [soundcloudapi-java]: http://code.google.com/p/soundcloudapi-java/
 [soundcloudapi-java-annouce]: http://blog.soundcloud.com/2010/01/08/java-wrapper/
 [CreateWrapper]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
@@ -219,8 +219,7 @@ See LICENSE for details.
 [SoundCloud Android]: https://market.android.com/details?id=com.soundcloud.android
 [register-app]: http://soundcloud.com/you/apps/new
 [Apache Maven]: http://maven.apache.org/
-[jar]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.0.jar
-[jar-all]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.0-all.jar
+[jar-all]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.1-all.jar
 [downloads]: https://github.com/soundcloud/java-api-wrapper/archives/master
 [snapshots]: https://oss.sonatype.org/content/repositories/snapshots/com/soundcloud/java-api-wrapper/
 [releases]: https://oss.sonatype.org/content/repositories/releases/com/soundcloud/java-api-wrapper/
