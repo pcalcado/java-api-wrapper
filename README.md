@@ -48,7 +48,7 @@ refreshes the token and retries the request so an API client usually does not
 need to care about this fact. If the client is interested (possibly to persist
 the updated token) it can register a listener with the wrapper.
 
-## Non-expiring access tokens (only applies version 1.0.1+)
+## Non-expiring access tokens (only applies to version 1.0.1+)
 
 Expiring access tokens provide more security but also add more complexity to
 the authentication process. If you don't want to use them you can request
@@ -112,7 +112,7 @@ First create a wrapper and remember to substitute all credentials with real ones
         -Ppassword=testing
 
     # with plain java
-    $ java -classpath java-api-wrapper-1.0.0-all.jar \
+    $ java -classpath java-api-wrapper-1.x.y-all.jar \
         com.soundcloud.api.examples.CreateWrapper \
         my_client_id mys3cr3t api-testing testing
 
@@ -131,7 +131,7 @@ other examples.
 GET a resource:
 
     $ gradle getResource -Presource=/me
-    (java -classpath java-api-wrapper-1.0.0-all.jar \
+    (java -classpath java-api-wrapper-1.x.y-all.jar \
         com.soundcloud.api.examples.GetResource /me)
 
 Output:
@@ -158,7 +158,7 @@ Upload a file:
 
     $ gradle uploadFile \
             -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
-      (java -classpath java-api-wrapper-1.0.0-all.jar \
+      (java -classpath java-api-wrapper-1.x.y-all.jar \
         com.soundcloud.api.examples.UploadFile ...)
 
 Output:
