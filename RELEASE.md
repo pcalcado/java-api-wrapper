@@ -26,7 +26,7 @@ This doesn't work properly at the moment - use `gradle uploadArchive` and copy
 Releasing to Sonatype OSS (staging)
 
     (make sure there are no uncommitted changes in the repo)
-    $ mvn -Dresume=false release:prepare # tag repo, bump pom.xml
+    $ mvn -Dresume=false release:prepare # tag repo, bump pom.xml (needs SNAPSHOT tag in pom)
     $ mvn release:perform -Darguments="-Dgpg.keyname=jan@soundcloud.com -Dgpg.passphrase="
 
 This will build and sign all artifcats and upload them to the staging server.
