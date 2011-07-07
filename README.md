@@ -94,6 +94,8 @@ The wrapper ships with a few examples in `src/examples/java`:
   login / password.
   * [GetResource][] performs a GET request for a resource and prints the
   JSON result.
+  * [PostResource][] performs a POST request to create a resource and prints the
+  JSON result
   * [PutResource][] performs a PUT request to update a resource and prints the
   JSON result
   * [UploadFile][] uploads a file to SoundCloud.
@@ -231,6 +233,7 @@ See LICENSE for details.
 [CreateWrapper]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
 [GetResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/GetResource.java
 [PutResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/PutResource.java
+[PostResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/PostResource.java
 [UploadFile]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/UploadFile.java
 [SoundCloud Android]: https://market.android.com/details?id=com.soundcloud.android
 [register-app]: http://soundcloud.com/you/apps/new
