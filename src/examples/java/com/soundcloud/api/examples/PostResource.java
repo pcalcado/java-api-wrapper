@@ -28,7 +28,6 @@ public class PostResource {
             String contentType = args.length == 3 ? args[2] : null;
             wrapper.setDefaultContentType(contentType);
 
-            System.err.println(args[1]);
             final Request resource = Request.to(args[0]).withContent(args[1], contentType);
 
             System.out.println("POST " + resource);
