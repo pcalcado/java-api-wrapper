@@ -311,6 +311,7 @@ public class Request implements Iterable<NameValuePair> {
         return "Request{" +
                 "params=" + mParams +
                 ", files=" + mFiles +
+                ", entity=" + mEntity +
                 ", mToken=" + mToken +
                 ", mResource='" + mResource + '\'' +
                 ", listener=" + listener +

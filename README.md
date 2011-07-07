@@ -140,11 +140,12 @@ Output:
     {
         "username": "testing",
         "city": "Berlin"
-    ...
+        ...
+    }
 
 PUT a resource:
 
-    $ gradle putResource -Presource=/me -Pcontent='{ "user": { "city": "Testor" } }'
+    $ gradle putResource -Presource=/me -Pcontent='{ "user": { "city": "Testor" } }' -PcontentType=application/json
 
 Output:
 
@@ -152,7 +153,21 @@ Output:
     {
         "username": "testing",
         "city": "Testor"
-    ...
+        ...
+    }
+
+POST a resource:
+
+    $ gradle postResource -Presource=/playlists -Pcontent='{ "playlist": { "title": "Test" } }' -PcontentType=application/json
+
+Output:
+
+    POST /playlists
+    {
+        "title": "Test",
+        "artwork_url": null,
+        ...
+    }
 
 Upload a file:
 
@@ -169,6 +184,7 @@ Output:
     {
         "artwork_url": null,
         ...
+    }
 
 You can add the debug flag (`-d`) to gradle to get some extra HTTP logging:
 
