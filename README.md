@@ -111,7 +111,8 @@ First create a wrapper and remember to substitute all credentials with real ones
     $ gradle createWrapper -Pclient_id=my_client_id \
         -Pclient_secret=mys3cr3t \
         -Plogin=api-testing \
-        -Ppassword=testing
+        -Ppassword=testing \
+        -Penv=live
 
     # with plain java
     $ java -classpath java-api-wrapper-1.x.y-all.jar \
