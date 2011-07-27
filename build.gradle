@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 
 sourceCompatibility = 1.6
-version = '1.0.1-SNAPSHOT'
+version = '1.0.2-SNAPSHOT'
 group   = 'com.soundcloud'
 
 repositories   { mavenCentral() }
@@ -76,7 +76,10 @@ def example(name, mainClass, arguments) {
 }
 example('createWrapper', 'CreateWrapper', { [client_id, client_secret, login, password, env] })
 example('getResource',   'GetResource',   { resource })
+example('putResource',   'PutResource',   { [resource, content, contentType] })
+example('postResource',  'PostResource',  { [resource, content, contentType] })
 example('uploadFile',    'UploadFile',    { file })
+example('dumpToken',     'DumpToken',     { [] })
 
 task writePom << {
   repositories.mavenDeployer().getPom().writeTo("pom.xml")

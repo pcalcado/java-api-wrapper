@@ -48,6 +48,22 @@ refreshes the token and retries the request so an API client usually does not
 need to care about this fact. If the client is interested (possibly to persist
 the updated token) it can register a listener with the wrapper.
 
+## Non-expiring access tokens (only applies to version 1.0.1+)
+
+Expiring access tokens provide more security but also add more complexity to
+the authentication process. If you don't want to use them you can request
+non-expiring tokens by specifying the scope "non-expiring" when exchanging the
+tokens:
+
+    Token token = wrapper.login("username", "password", Token.SCOPE_NON_EXPIRING);
+
+The resulting token will be valid until revoked manually.
+
+For the `authorization_code` grant type you need to request the scope like so:
+
+    URI uri = wrapper.authorizationCodeUrl(Endpoints.CONNECT, Token.SCOPE_NON_EXPIRING);
+    // open uri in browser / WebView etc.
+
 ## Requirements
 
 The wrapper depends on [Apache HttpClient][] (including the [HttpMime][]
@@ -68,7 +84,7 @@ You don't have to use gradle - the repo also contains a `pom.xml` file which
 can be used to build and test the project with [Apache Maven][] (`mvn install`).
 
 Jar files are available in the Github [download section][downloads] and on
-sonatype.org ([snapshots][], [releases][]).
+sonatype.org / maven ([snapshots][], [releases][], [maven-central][]).
 
 ## Examples
 
@@ -78,6 +94,10 @@ The wrapper ships with a few examples in `src/examples/java`:
   login / password.
   * [GetResource][] performs a GET request for a resource and prints the
   JSON result.
+  * [PostResource][] performs a POST request to create a resource and prints the
+  JSON result
+  * [PutResource][] performs a PUT request to update a resource and prints the
+  JSON result
   * [UploadFile][] uploads a file to SoundCloud.
 
 You can use gradle tasks to compile and run these examples with one command.
@@ -94,7 +114,7 @@ First create a wrapper and remember to substitute all credentials with real ones
         -Ppassword=testing
 
     # with plain java
-    $ java -classpath java-api-wrapper-1.0.0-all.jar \
+    $ java -classpath java-api-wrapper-1.x.y-all.jar \
         com.soundcloud.api.examples.CreateWrapper \
         my_client_id mys3cr3t api-testing testing
 
@@ -113,7 +133,7 @@ other examples.
 GET a resource:
 
     $ gradle getResource -Presource=/me
-    (java -classpath java-api-wrapper-1.0.0-all.jar \
+    (java -classpath java-api-wrapper-1.x.y-all.jar \
         com.soundcloud.api.examples.GetResource /me)
 
 Output:
@@ -122,13 +142,40 @@ Output:
     {
         "username": "testing",
         "city": "Berlin"
-    ...
+        ...
+    }
+
+PUT a resource:
+
+    $ gradle putResource -Presource=/me -Pcontent='{ "user": { "city": "Testor" } }' -PcontentType=application/json
+
+Output:
+
+    PUT /me
+    {
+        "username": "testing",
+        "city": "Testor"
+        ...
+    }
+
+POST a resource:
+
+    $ gradle postResource -Presource=/playlists -Pcontent='{ "playlist": { "title": "Test" } }' -PcontentType=application/json
+
+Output:
+
+    POST /playlists
+    {
+        "title": "Test",
+        "artwork_url": null,
+        ...
+    }
 
 Upload a file:
 
     $ gradle uploadFile \
             -Pfile=src/test/resources/com/soundcloud/api/hello.aiff
-      (java -classpath java-api-wrapper-1.0.0-all.jar \
+      (java -classpath java-api-wrapper-1.x.y-all.jar \
         com.soundcloud.api.examples.UploadFile ...)
 
 Output:
@@ -139,6 +186,7 @@ Output:
     {
         "artwork_url": null,
         ...
+    }
 
 You can add the debug flag (`-d`) to gradle to get some extra HTTP logging:
 
@@ -179,17 +227,19 @@ See LICENSE for details.
 [Apache HttpClient]: http://hc.apache.org/httpcomponents-client-ga/
 [HttpMime]: http://hc.apache.org/httpcomponents-client-ga/httpmime
 [json-java]: http://json.org/java/
-[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/1.0.0/com/soundcloud/api/package-summary.html
+[javadoc]: http://soundcloud.github.com/java-api-wrapper/javadoc/1.0.1/com/soundcloud/api/package-summary.html
 [soundcloudapi-java]: http://code.google.com/p/soundcloudapi-java/
 [soundcloudapi-java-annouce]: http://blog.soundcloud.com/2010/01/08/java-wrapper/
 [CreateWrapper]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/CreateWrapper.java
 [GetResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/GetResource.java
+[PutResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/PutResource.java
+[PostResource]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/PostResource.java
 [UploadFile]: https://github.com/soundcloud/java-api-wrapper/blob/master/src/examples/java/com/soundcloud/api/examples/UploadFile.java
 [SoundCloud Android]: https://market.android.com/details?id=com.soundcloud.android
 [register-app]: http://soundcloud.com/you/apps/new
 [Apache Maven]: http://maven.apache.org/
-[jar]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.0.jar
-[jar-all]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.0-all.jar
+[jar-all]: https://github.com/downloads/soundcloud/java-api-wrapper/java-api-wrapper-1.0.1-all.jar
 [downloads]: https://github.com/soundcloud/java-api-wrapper/archives/master
 [snapshots]: https://oss.sonatype.org/content/repositories/snapshots/com/soundcloud/java-api-wrapper/
 [releases]: https://oss.sonatype.org/content/repositories/releases/com/soundcloud/java-api-wrapper/
+[maven-central]: http://repo1.maven.org/maven2/com/soundcloud/java-api-wrapper/

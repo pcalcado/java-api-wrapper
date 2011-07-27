@@ -2,9 +2,7 @@ package com.soundcloud.api;
 
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.auth.AUTH;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
@@ -121,6 +120,61 @@ public class RequestTest {
     }
 
     @Test
+    public void shouldDetectMultipartRequests() throws Exception {
+        assertFalse(Request.to("/foo")
+                .with("key", "value").isMultipart());
+
+        assertTrue(Request.to("/foo")
+                .with("key", "value")
+                .withFile("foo", "foo".getBytes()).isMultipart());
+    }
+
+    @Test
+    public void shouldCreateMultipartRequestWhenFilesAreAddedWithByteArray() throws Exception {
+        HttpPost request = Request.to("/foo")
+                .with("key", "value")
+                .withFile("testing", "foo".getBytes())
+                .buildRequest(HttpPost.class);
+
+        assertTrue(request.getEntity() instanceof MultipartEntity);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        request.getEntity().writeTo(os);
+        String encoded = os.toString();
+
+        assertThat(encoded, containsString("foo"));
+        assertThat(encoded, containsString("key"));
+        assertThat(encoded, containsString("value"));
+        assertThat(encoded, containsString("testing"));
+    }
+
+    @Test
+    public void shouldIncludeAnyEntityInRequest() throws Exception {
+        HttpPost request = Request.to("/too")
+                .withEntity(new StringEntity("foo"))
+                .buildRequest(HttpPost.class);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        request.getEntity().writeTo(os);
+        String body = os.toString();
+        assertThat("foo", equalTo(body));
+    }
+
+    @Test
+    public void shouldIncludeContentInRequest() throws Exception {
+        HttpPost request = Request.to("/too")
+                .withContent("<foo><baz>content</baz></foo>", "application/xml")
+                .buildRequest(HttpPost.class);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        request.getEntity().writeTo(os);
+        String body = os.toString();
+
+        assertThat(request.getFirstHeader("Content-Type").getValue(), equalTo("application/xml"));
+        assertThat("<foo><baz>content</baz></foo>", equalTo(body));
+    }
+
+    @Test
     public void whenAProgressListenerIsSpecifiedShouldHaveCountingMultipart() throws Exception {
         HttpPost request = Request.to("/foo")
                 .with("key", "value")
@@ -144,7 +198,7 @@ public class RequestTest {
     public void toStringShouldWork() throws Exception {
         assertThat(
                 new Request("/foo").with("1", "2").toString(),
-                equalTo("Request{params=[1=2], files=null, mToken=null, mResource='/foo', listener=null}"));
+                equalTo("Request{params=[1=2], files=null, entity=null, mToken=null, mResource='/foo', listener=null}"));
     }
 
     @Test

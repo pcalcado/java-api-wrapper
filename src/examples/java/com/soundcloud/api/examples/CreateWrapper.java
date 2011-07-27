@@ -16,7 +16,7 @@ public final class CreateWrapper {
 
     public static void main(String[] args) throws Exception {
         if (args.length < 4) {
-            System.err.println("CreateWrapper client_id client_secret login password [live|sandbox]");
+            System.err.println("CreateWrapper client_id client_secret login password [live|sandbox] [scope]");
             System.exit(1);
         } else {
             final ApiWrapper wrapper = new ApiWrapper(
@@ -26,7 +26,13 @@ public final class CreateWrapper {
                     null    /* token */,
                     args.length == 5 ? Env.valueOf(args[4].toUpperCase()) : Env.LIVE);
 
-            Token token = wrapper.login(args[2] /* login */, args[3] /* password */);
+            Token token;
+            if (args.length < 6) {
+                token = wrapper.login(args[2] /* login */, args[3] /* password */);
+            } else {
+                token = wrapper.login(args[2] /* login */, args[3] /* password */, args[5] /* scope */);
+            }
+
             System.out.println("got token from server: " + token);
 
             // in this example the whole wrapper is serialised to disk -

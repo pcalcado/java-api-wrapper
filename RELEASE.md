@@ -11,6 +11,7 @@ Bump version constants in
  * build.gradle
  * src/main/java/com/soundcloud/api/package-info.java
  * src/main/java/com/soundcloud/api/CloudAPI.java
+ * README.md (javadoc, jar-all)
 
 Regenerate + publish javadoc:
 
@@ -26,7 +27,7 @@ This doesn't work properly at the moment - use `gradle uploadArchive` and copy
 Releasing to Sonatype OSS (staging)
 
     (make sure there are no uncommitted changes in the repo)
-    $ mvn -Dresume=false release:prepare # tag repo, bump pom.xml
+    $ mvn -Dresume=false release:prepare # tag repo, bump pom.xml (needs SNAPSHOT tag in pom)
     $ mvn release:perform -Darguments="-Dgpg.keyname=jan@soundcloud.com -Dgpg.passphrase="
 
 This will build and sign all artifcats and upload them to the staging server.
@@ -46,6 +47,11 @@ just make sure `build.gradle` version contains a `-SNAPSHOT` suffix, then run:
     $ gradle uploadArchive
 
 Snapshots can be found in the [snapshot repo][].
+
+Release a jar-all version to github:
+
+    $ gradle jarAll
+
 
 [Sonatype OSS Maven Repository Usage Guide]: https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
 [Sonatype OSS]: https://oss.sonatype.org/

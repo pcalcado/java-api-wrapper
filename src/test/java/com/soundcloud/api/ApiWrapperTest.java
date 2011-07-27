@@ -135,6 +135,21 @@ public class ApiWrapperTest {
     }
 
     @Test
+    public void shouldGetTokensWhenLoggingInWithNonExpiringScope() throws Exception {
+        layer.addPendingHttpResponse(200, "{\n" +
+                "  \"access_token\":  \"04u7h-4cc355-70k3n\",\n" +
+                "  \"scope\":         \"* non-expiring\"\n" +
+                "}");
+
+        Token t = api.login("foo", "bar", Token.SCOPE_NON_EXPIRING);
+        assertThat(t.access, equalTo("04u7h-4cc355-70k3n"));
+        assertThat(t.refresh, is(nullValue()));
+        assertThat(t.getExpiresIn(), is(nullValue()));
+        assertThat(t.scoped(Token.SCOPE_NON_EXPIRING), is(true));
+        assertThat(t.scoped(Token.SCOPE_DEFAULT), is(true));
+    }
+
+    @Test
     public void shouldGetTokensWhenLoggingInViaAuthorizationCode() throws Exception {
         layer.addPendingHttpResponse(200, "{\n" +
                 "  \"access_token\":  \"04u7h-4cc355-70k3n\",\n" +
@@ -149,6 +164,23 @@ public class ApiWrapperTest {
         assertThat(t.refresh, equalTo("04u7h-r3fr35h-70k3n"));
         assertThat(t.scope, equalTo("*"));
         assertNotNull(t.getExpiresIn());
+    }
+
+    @Test
+    public void shouldGetTokensWhenLoggingInViaAuthorizationCodeAndScope() throws Exception {
+        layer.addPendingHttpResponse(200, "{\n" +
+                "  \"access_token\":  \"04u7h-4cc355-70k3n\",\n" +
+                "  \"scope\":         \"* non-expiring\"\n" +
+                "}");
+
+        Token t = api.authorizationCode("code", Token.SCOPE_NON_EXPIRING);
+
+        assertThat(t.access, equalTo("04u7h-4cc355-70k3n"));
+        assertThat(t.refresh, is(nullValue()));
+
+        assertThat(t.scoped(Token.SCOPE_DEFAULT), is(true));
+        assertThat(t.scoped(Token.SCOPE_NON_EXPIRING), is(true));
+        assertNull(t.getExpiresIn());
     }
 
     @Test(expected = IOException.class)
@@ -303,20 +335,30 @@ public class ApiWrapperTest {
     @Test
     public void shouldGenerateURIForLoginAuthCode() throws Exception {
         assertThat(
-                api.authorizationCodeUrl().toString(),
-                    equalTo("https://sandbox-soundcloud.com/connect?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
-                );
+            api.authorizationCodeUrl().toString(),
+                equalTo("https://sandbox-soundcloud.com/connect"+
+                        "?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
+            );
     }
 
 
     @Test
     public void shouldGenerateURIForLoginAuthCodeWithDifferentEndPoint() throws Exception {
         assertThat(
-                api.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT).toString(),
-                    equalTo("https://sandbox-soundcloud.com/connect/via/facebook?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
-                );
+            api.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT).toString(),
+                equalTo("https://sandbox-soundcloud.com/connect/via/facebook"+
+                        "?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code")
+        );
     }
 
+    @Test
+    public void shouldIncludeScopeInAuthorizationUrl() throws Exception {
+        assertThat(
+            api.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT, Token.SCOPE_NON_EXPIRING).toString(),
+                equalTo("https://sandbox-soundcloud.com/connect/via/facebook"+
+                        "?redirect_uri=redirect%3A%2F%2Fme&client_id=invalid&response_type=code&scope=non-expiring")
+        );
+    }
 
     @Test
     public void shouldCallTokenStateListenerWhenTokenIsInvalidated() throws Exception {

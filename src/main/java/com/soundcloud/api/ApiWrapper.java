@@ -72,6 +72,7 @@ import java.util.Arrays;
  */
 public class ApiWrapper implements CloudAPI, Serializable {
     private static final long serialVersionUID = 3662083416905771921L;
+    public static final String DEFAULT_CONTENT_TYPE = "application/json";
 
     /** The current environment */
     public final Env env;
@@ -84,6 +85,9 @@ public class ApiWrapper implements CloudAPI, Serializable {
 
     /** debug request details to stderr */
     public boolean debugRequests;
+
+
+    private String mDefaultContentType;
 
     /**
      * Constructs a new ApiWrapper instance.
@@ -108,28 +112,41 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override public Token login(String username, String password) throws IOException {
+        return login(username, password, null);
+    }
+
+    @Override public Token login(String username, String password, String scope) throws IOException {
         if (username == null || password == null) {
             throw new IllegalArgumentException("username or password is null");
         }
-        mToken = requestToken(Request.to(Endpoints.TOKEN).with(
+        final Request request = Request.to(Endpoints.TOKEN).with(
                 "grant_type", PASSWORD,
                 "client_id", mClientId,
                 "client_secret", mClientSecret,
                 "username", username,
-                "password", password));
+                "password", password);
+        if (scope != null) request.add("scope", scope);
+        mToken = requestToken(request);
         return mToken;
     }
 
     @Override public Token authorizationCode(String code) throws IOException {
+        return authorizationCode(code, null);
+    }
+
+    @Override public Token authorizationCode(String code, String scope) throws IOException {
         if (code == null) {
             throw new IllegalArgumentException("username or password is null");
         }
-        mToken = requestToken(Request.to(Endpoints.TOKEN).with(
+        final Request request = Request.to(Endpoints.TOKEN).with(
                 "grant_type", AUTHORIZATION_CODE,
                 "client_id", mClientId,
                 "client_secret", mClientSecret,
                 "redirect_uri", mRedirectUri,
-                "code", code));
+                "code", code);
+        if (scope != null) request.add("scope", scope);
+
+        mToken = requestToken(request);
         return mToken;
     }
 
@@ -187,14 +204,12 @@ public class ApiWrapper implements CloudAPI, Serializable {
     }
 
     @Override public URI authorizationCodeUrl(String... options) {
-        return getURI(
-                Request.to(options.length == 0 ? Endpoints.CONNECT : options[0]).with(
-                        "redirect_uri", mRedirectUri,
-                        "client_id", mClientId,
-                        "response_type", "code"
-                ),
-                false,
-                true);
+        final Request req = Request.to(options.length == 0 ? Endpoints.CONNECT : options[0]).with(
+                "redirect_uri", mRedirectUri,
+                "client_id", mClientId,
+                "response_type", "code");
+        if (options.length == 2) req.add("scope", options[1]);
+        return getURI(req, false, true);
     }
 
     /**
@@ -409,6 +424,15 @@ public class ApiWrapper implements CloudAPI, Serializable {
         oos.close();
     }
 
+
+    public String getDefaultContentType() {
+        return (mDefaultContentType == null) ? DEFAULT_CONTENT_TYPE : mDefaultContentType;
+    }
+
+    public void setDefaultContentType(String contentType) {
+        mDefaultContentType = contentType;
+    }
+
     /**
      * Read wrapper from a file
      * @param f  the file
@@ -442,7 +466,7 @@ public class ApiWrapper implements CloudAPI, Serializable {
     /** Forces JSON */
     protected HttpRequest addAcceptHeader(HttpRequest request) {
         if (!request.containsHeader("Accept")) {
-            request.addHeader("Accept", "application/json");
+            request.addHeader("Accept", getDefaultContentType());
         }
         return request;
     }

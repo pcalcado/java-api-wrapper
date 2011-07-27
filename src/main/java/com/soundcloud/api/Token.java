@@ -19,10 +19,16 @@ public class Token implements Serializable {
     public static final String SCOPE         = "scope";
     public static final String EXPIRES_IN    = "expires_in";
 
-    public static final String SCOPE_DEFAULT    = "*";
-    public static final String SCOPE_SIGNUP     = "signup";
-    public static final String SCOPE_PLAYCOUNT  = "playcount";
+    public static final String SCOPE_DEFAULT      = "*";
 
+    /** Special scope for signup / password recovery */
+    public static final String SCOPE_SIGNUP       = "signup";
+    public static final String SCOPE_PLAYCOUNT    = "playcount";
+
+    /** Don't expire access token - returned tokens won't include a refresh token */
+    public static final String SCOPE_NON_EXPIRING = "non-expiring";
+
+    // XXX these should be private
     public String access, refresh, scope;
     public long expiresIn;
 
@@ -33,8 +39,13 @@ public class Token implements Serializable {
      * to involve the resource owner.
      */
     public Token(String access, String refresh) {
+        this(access, refresh, null);
+    }
+
+    public Token(String access, String refresh, String scope) {
         this.access = access;
         this.refresh = refresh;
+        this.scope = scope;
     }
 
     /**
@@ -45,9 +56,12 @@ public class Token implements Serializable {
     public Token(JSONObject json) throws IOException {
         try {
             access = json.getString(ACCESS_TOKEN);
-            refresh = json.getString(REFRESH_TOKEN);
+            if (json.has(REFRESH_TOKEN)) {
+                // refresh token won't be set if we don't expire
+                refresh = json.getString(REFRESH_TOKEN);
+                expiresIn = System.currentTimeMillis() + json.getLong(EXPIRES_IN) * 1000;
+            }
             scope = json.getString(SCOPE);
-            expiresIn = System.currentTimeMillis() + json.getLong(EXPIRES_IN) * 1000;
         } catch (JSONException e) {
             throw new IOException(e.getMessage());
         }
@@ -84,7 +98,7 @@ public class Token implements Serializable {
 
     /** @return is this token valid */
     public boolean valid() {
-        return access != null && refresh != null;
+        return access != null && (scoped(SCOPE_NON_EXPIRING) || refresh != null);
     }
 
     @Override
