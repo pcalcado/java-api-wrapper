@@ -25,6 +25,7 @@ public interface Endpoints {
     String MY_CONNECTIONS      = "/me/connections";
     String MY_ACTIVITIES       = "/me/activities/tracks";
     String MY_EXCLUSIVE_TRACKS = "/me/activities/tracks/exclusive";
+    String MY_NEWS             = "/me/activities/all/own";
     String MY_TRACKS           = "/me/tracks";
     String MY_PLAYLISTS        = "/me/playlists";
     String MY_FAVORITES        = "/me/favorites";
