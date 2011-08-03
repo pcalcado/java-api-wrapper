@@ -12,6 +12,7 @@ public interface Endpoints {
     String TRACKS              = "/tracks";
     String TRACK_DETAILS       = "/tracks/%d";
     String TRACK_COMMENTS      = "/tracks/%d/comments";
+    String TRACK_FAVORITERS    = "/tracks/%d/favoriters";
 
     String USERS               = "/users";
     String USER_DETAILS        = "/users/%d";
